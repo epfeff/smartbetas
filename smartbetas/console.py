@@ -32,6 +32,9 @@ class betacmd(cmd.Cmd):
 
     def do_symbols(self, arg):
         symbols = db(db.symbols).select()
+        if len(symbols) == 0:
+            print('%s %s' % (self.out, 'no symbols stored'))
+            return
         for i, sym in enumerate(symbols):
             print('%s %3s: %s -  %s' % (self.out, i, sym.ticker, sym.name))
 
@@ -41,3 +44,7 @@ class betacmd(cmd.Cmd):
 
     def do_save(self, arg):
         print('save')
+
+    def do_bye(self, arg):
+        print('terminating...')
+        exit()
