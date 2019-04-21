@@ -12,7 +12,7 @@ def validate(raw):
     return tickers
 
 def save(ticks):
-    gbl.TICKERS = ticks
+    errors = []
     # verifiy if the symbol is already present in the db
     # otherwise fetches it from the public api and inserts it into the DB
     for item in ticks:
@@ -22,9 +22,14 @@ def save(ticks):
             if name != None:
                 db.symbols.insert(ticker = item, name = name)
                 db.commit()
-            gbl.NAMES.append(name)
+                gbl.TICKERS.append(item)
+                gbl.NAMES.append(name)
+            else:
+                errors.append(item)
         else:
+            gbl.TICKERS.append(row[0].name)
             gbl.NAMES.append(row[0].name)
+    return errors
 
 if __name__ == '__main__':
     save(['GOOGL', 'APPL', 'TSLA'])

@@ -9,7 +9,7 @@ def symbol(tick):
     else:
         return None
 
-def tsm(tick):
+def tsd(tick):
     close = []
     # insert real code one day
     data =  json.loads(open('tsm.json', 'r').read())

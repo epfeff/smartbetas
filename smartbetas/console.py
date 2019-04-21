@@ -17,7 +17,10 @@ class betacmd(cmd.Cmd):
             for i, tick in enumerate(ticks):
                 print('%s %3s: %s ' % (self.out, i, tick))
             if input('%s save tickers ? (y/n): ' %(self.out)) == 'y':
-                tickers.save(ticks)
+                wr = tickers.save(ticks)
+                if len(wr) > 0:
+                    for item in wr:
+                        print("%s ERROR: '%s' not found!" %(self.out, item))
                 print('%s tickers list saved !' % (self.out))
         else:
             print("%s '%s' not found" % (self.out, arg))
