@@ -1,22 +1,32 @@
 # -*- coding: UTF-8 -*-
 import api, json, volatility, cumulative, composite, i_o, gbl, time
-from datetime import datetime, date, timedelta
+from threading import Thread
+import concurrent.futures
+v_vol = []                      # volatility vector
+v_cmr = []                      # cumulative return vector
+prices = {}                     # stores the prices
 
 def smartbetas(tickers):
     start = time.time()
-    v_vol = []                      # volatility vector
-    v_cmr = []                      # cumulative return vector
+
     p_vol = {}                      # portfolio volatility
     p_cmr = {}                      # portfolio cumulative return
     p_cmp = {}                      # portfolio composite
-    prices = {}                     # stores the prices
     p_size = 0                      # investment portfolio quantity of tickers
 
-    for tick in tickers:
-        data = api.tsd(tick)
-        prices[tick] = data[0][1]
-        v_vol.append((tick, volatility.volatility(data)))
-        v_cmr.append((tick, cumulative.cumulative(data)))
+    threads = []
+
+    #for tick in tickers:
+        #compute(tick)
+        #t = Thread(target=compute, args=(tick,))
+        #t.start()
+        #threads.append(t)
+
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        for tick, status in zip(tickers, executor.map(compute, tickers)):
+            print('%s is prime: %s' % (tick, status))
+    future = executor.done()
+    
 
     # sorting the vectors
     v_vol.sort(key = lambda x: x[1])
@@ -35,6 +45,13 @@ def smartbetas(tickers):
     gbl.P_CMP = p_cmp
     gbl.PRICES = prices
     print(time.time()-start)
+
+def compute(tick):
+    data = api.tsd(tick)
+    prices[tick] = data[0][1]
+    v_vol.append((tick, volatility.volatility(data)))
+    v_cmr.append((tick, cumulative.cumulative(data)))
+    return 'Done'
 
 if __name__ == '__main__':
     smartbetas(['APPL', 'GOOGL', 'SBUX', 'TSLA', 'AMZN'])
