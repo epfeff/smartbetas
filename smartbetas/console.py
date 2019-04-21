@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-import cmd, os, tickers, gbl, api
+import cmd, os, tickers, gbl, api, compute, i_o, money
 from db import db
 
 class betacmd(cmd.Cmd):
@@ -39,11 +39,21 @@ class betacmd(cmd.Cmd):
             print('%s %3s: %s -  %s' % (self.out, i, sym.ticker, sym.name))
 
     def do_compute(self, arg):
-        print('compute')
+        compute.smartbetas(['APPL', 'GOOGL', 'SBUX', 'TSLA', 'AMZN'])
         print(arg)
 
-    def do_save(self, arg):
-        print('save')
+    def do_portfolio(self, arg):
+        print('%s current portfolio' % (self.out))
+        i_o.portfolio(gbl.P_VOL, gbl.P_CMR, gbl.P_CMP, gbl.PRICES)
+
+    def do_invest(self, arg):
+        p_size = 10 if len(gbl.P_VOL)>10 else len(gbl.P_VOL)
+        s_name = ''
+        p_size, s_name = i_o.investment(p_size)
+        if p_size == False and s_name == False: return
+        #invests some cash
+        money.invest(p_size, gbl.P_VOL, gbl.P_CMR,
+            gbl.P_CMP, gbl.PRICES, s_name, 100000)
 
     def do_bye(self, arg):
         print('terminating...')

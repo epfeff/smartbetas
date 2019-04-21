@@ -8,13 +8,18 @@ folder = os.getcwd()+('/db' if os.name != 'nt' else '\db')
 print(folder)
 db = DAL('sqlite://storage.sqlite', folder=folder, migrate_enabled=True)
 
-db.define_table('sessions',
+db.define_table('investments',
                 Field('date', 'datetime'),
-                Field('tickers', 'list:string'),
-                Field('tsm', 'json'),
-                Field('out', 'string'),
-                Field('img', 'upload'))
+                Field('name', 'string'),
+                Field('vol', 'json'),
+                Field('cmr', 'json'),
+                Field('cmp', 'json'))
 
 db.define_table('symbols',
                 Field('ticker', 'string'),
                 Field('name', 'string'))
+
+db.define_table('price',
+                Field('date', 'datetime'),
+                Field('ticker', 'string'),
+                Field('price', 'float'))
