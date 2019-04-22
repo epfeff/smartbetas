@@ -3,12 +3,22 @@ import cmd, os, tickers, gbl, api, compute, i_o, money, check
 from db import db
 
 class betacmd(cmd.Cmd):
-    intro = 'Smart Betas strategy calculator - Requires an internet connection'
+    intro = 'Smart Betas Investing - Requires an internet connection'
     prompt = '(beta): '
     out = '-->'
     file = None
 
+    # empy lines do nothing
+    def emptyline(self):
+        return
+
     def do_load(self, arg):
+        """ Loads a file containing tickers
+
+        usage: load <FILENAME>
+
+        Tickers in the file should be coma separated.
+        """
         # Checks if the specified file exists
         gbl.TICKERS = []
         if os.path.isfile(arg):
@@ -27,11 +37,19 @@ class betacmd(cmd.Cmd):
             print("%s '%s' not found" % (self.out, arg))
 
     def do_show(self, arg):
-        print('%s %s tickers stored' % (self.out, len(gbl.TICKERS)))
+        """ Displays tickers ready for computing.
+
+        usage: show
+        """
+        print('%s %s ticker(s) ready' % (self.out, len(gbl.TICKERS)))
         for i, tick in enumerate(gbl.TICKERS):
             print('%s %3s: %s -  %s' % (self.out, i, tick, gbl.NAMES[i]))
 
     def do_symbols(self, arg):
+        """ Display tickers stored in the database
+
+        usage: symbols
+        """
         symbols = db(db.symbols).select()
         if len(symbols) == 0:
             print('%s %s' % (self.out, 'no symbols stored'))
@@ -40,8 +58,15 @@ class betacmd(cmd.Cmd):
             print('%s %3s: %s -  %s' % (self.out, i, sym.ticker, sym.name))
 
     def do_compute(self, arg):
+        """ Computes tickers in the pipe into a portfolio
+
+        usage: compute
+        """
         if len(gbl.TICKERS) > 0:
             compute.smartbetas(gbl.TICKERS)
+            if input('%s save portfolio (y/n)' % (self.out)) == 'y':
+                name = input('%s portfolio name: ' % (self.out))
+                tickers.save_portfolio(gbl.P_VOL, gbl.P_CMR, gbl.P_CMP, gbl.PRICES, name)
         else:
             print('%s load some tickers first (load filename)' % (self.out))
 

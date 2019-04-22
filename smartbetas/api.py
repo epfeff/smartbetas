@@ -1,4 +1,5 @@
 # -*- coding: UTF-8 -*-
+import gbl
 import urllib.request, json, datetime, time
 from datetime import datetime
 
@@ -19,7 +20,7 @@ def tsd(tick):
     # file = '%s.json' % tick
     # insert code to get data from API
     #data =  json.loads(open(file, 'r').read())
-    url = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=%s&outputsize=full&apikey=K44NPIPA1JQK6QGM" % (tick)
+    url = gbl.API_URL % (tick, gbl.API_KEY)
     print('%s fetching data for %s' %(out, tick))
     raw = urllib.request.urlopen(url)
     print('%s data fetched for %s!' % (out,tick))

@@ -6,7 +6,7 @@ def portfolio(vol, cmr, cmp, prices):
     print('%s' % ('-'.center(70, '-')))
     print('|%5s|%20s|%20s|%20s|' % ('Pos'.center(5),
                                     'Volatility'.center(20),
-                                    'Cumulative'.center(20),
+                                    'Momentum'.center(20),
                                     'Composite'.center(20)))
     print('%s' % ('-'.center(70, '-')))
     for v, r, p in zip(vol.keys(), cmr.keys(), cmp.keys()):
@@ -57,12 +57,12 @@ def returns(vol, cmr, cmp, name):
     print('%s' % ('Volatility Based Portfolio'.center(80, ' ')))
     print('%s' % ('-'.center(80, '-')))
     print('|%8s|%8s|%15s|%11s|%11s|%11s|%8s|' % ('Ticker'.center(8),
-                                        'Volume'.center(8),
+                                        'N Shares'.center(8),
                                         'Purchase Date'.center(15),
-                                        'Old Price'.center(11),
-                                        'New Price'.center(11),
-                                        'Returns'.center(11),
-                                        'Rate'.center(8)))
+                                        'Initial'.center(11),
+                                        'Current'.center(11),
+                                        'Abs Change'.center(11),
+                                        'Returns'.center(8)))
     print('%s' % ('-'.center(80, '-')))
     for t in vol:
         print('|%8s|%8s|%15s|%11s|%11s|%11s|%8s|' % (t.center(8),
@@ -73,15 +73,15 @@ def returns(vol, cmr, cmp, name):
                                         (str(vol[t]['abs'])+' $').center(11),
                                         (str(vol[t]['rel'])+' %').center(8)))
     print('%s' % ('-'.center(80, '-')))
-    print('%s' % ('Cumulative Returns Based Portfolio'.center(80, ' ')))
+    print('%s' % ('Momentum Based Portfolio'.center(80, ' ')))
     print('%s' % ('-'.center(80, '-')))
     print('|%8s|%8s|%15s|%11s|%11s|%11s|%8s|' % ('Ticker'.center(8),
-                                        'Volume'.center(8),
+                                        'N Shares'.center(8),
                                         'Purchase Date'.center(15),
-                                        'Old Price'.center(11),
-                                        'New Price'.center(11),
-                                        'Returns'.center(11),
-                                        'Rate'.center(8)))
+                                        'Initial'.center(11),
+                                        'Current'.center(11),
+                                        'Abs Change'.center(11),
+                                        'Returns'.center(8)))
     print('%s' % ('-'.center(80, '-')))
     for t in cmr:
         print('|%8s|%8s|%15s|%11s|%11s|%11s|%8s|' % (t.center(8),
@@ -92,15 +92,15 @@ def returns(vol, cmr, cmp, name):
                                         (str(cmr[t]['abs'])+' $').center(11),
                                         (str(cmr[t]['rel'])+' %').center(8)))
     print('%s' % ('-'.center(80, '-')))
-    print('%s' % ('Cumulative Returns Based Portfolio'.center(80, ' ')))
+    print('%s' % ('Composite Based Portfolio'.center(80, ' ')))
     print('%s' % ('-'.center(80, '-')))
     print('|%8s|%8s|%15s|%11s|%11s|%11s|%8s|' % ('Ticker'.center(8),
-                                        'Volume'.center(8),
+                                        'N Shares'.center(8),
                                         'Purchase Date'.center(15),
-                                        'Old Price'.center(11),
-                                        'New Price'.center(11),
-                                        'Returns'.center(11),
-                                        'Rate'.center(8)))
+                                        'Initial'.center(11),
+                                        'Current'.center(11),
+                                        'Abs Change'.center(11),
+                                        'Returns'.center(8)))
     print('%s' % ('-'.center(80, '-')))
     for t in cmp:
         print('|%8s|%8s|%15s|%11s|%11s|%11s|%8s|' % (t.center(8),

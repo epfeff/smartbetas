@@ -15,6 +15,14 @@ db.define_table('investments',
                 Field('cmp', 'json'),
                 Field('prc', 'json'))
 
+db.define_table('portfolios',
+                Field('date', 'datetime'),
+                Field('name', 'string'),
+                Field('vol', 'json'),
+                Field('cmr', 'json'),
+                Field('cmp', 'json'),
+                Field('prc', 'json'))
+
 db.define_table('symbols',
                 Field('ticker', 'string'),
                 Field('name', 'string'))

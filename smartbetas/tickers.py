@@ -31,6 +31,12 @@ def save(ticks):
             gbl.NAMES.append(row[0].name)
     return errors
 
+def save_portfolio(vol, cmr, cmp, prices, name):
+    db.portfolio.insert(name = name,
+                        vol = vol,
+                        cmr = cmr,
+                        )
+
 if __name__ == '__main__':
     save(['GOOGL', 'APPL', 'TSLA'])
     print(gbl.NAMES)
