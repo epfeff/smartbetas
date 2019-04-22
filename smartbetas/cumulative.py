@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 from datetime import datetime, timedelta
 
-def cumulative(data):
+def ret(data):
     vector = []
     today = datetime.today()
     delta1 = timedelta(weeks = 8)

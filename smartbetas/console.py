@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-import cmd, os, tickers, gbl, api, compute, i_o, money
+import cmd, os, tickers, gbl, api, compute, i_o, money, check
 from db import db
 
 class betacmd(cmd.Cmd):
@@ -10,6 +10,7 @@ class betacmd(cmd.Cmd):
 
     def do_load(self, arg):
         # Checks if the specified file exists
+        gbl.TICKERS = []
         if os.path.isfile(arg):
             print('%s found %s!' % (self.out, arg))
             ticks = tickers.validate(open(arg, 'r').read())
@@ -39,8 +40,10 @@ class betacmd(cmd.Cmd):
             print('%s %3s: %s -  %s' % (self.out, i, sym.ticker, sym.name))
 
     def do_compute(self, arg):
-        compute.smartbetas(['APPL', 'GOOGL', 'SBUX', 'TSLA', 'AMZN'])
-        print(arg)
+        if len(gbl.TICKERS) > 0:
+            compute.smartbetas(gbl.TICKERS)
+        else:
+            print('%s load some tickers first (load filename)' % (self.out))
 
     def do_portfolio(self, arg):
         print('%s current portfolio' % (self.out))
@@ -54,6 +57,43 @@ class betacmd(cmd.Cmd):
         #invests some cash
         money.invest(p_size, gbl.P_VOL, gbl.P_CMR,
             gbl.P_CMP, gbl.PRICES, s_name, 100000)
+
+    def do_check(self, arg):
+        inv = db(db.investments).select(orderby=db.investments.date)
+        r_id = [row.id for row in inv]
+        i_o.sessions(inv)
+        s_id = ''
+        while True:
+            try:
+                s_id = int(input('%s Session ID ? (Id): ' %(self.out)))
+                if s_id not in r_id:
+                    raise ValueError
+            except ValueError:
+                print('%s enter a number within Id range !' %(self.out))
+                continue
+            else:
+                break
+        vol, cmr, cmp, name = check.sessions(s_id)
+        i_o.returns(vol, cmr, cmp, name)
+
+    def do_report(self, arg):
+        rep = db(db.checks).select()
+        r_id = [row.id for row in rep]
+        i_o.reports(rep)
+        s_id = ''
+        while True:
+            try:
+                s_id = int(input('%s Report ID ? (Id): ' %(self.out)))
+                if s_id not in r_id:
+                    raise ValueError
+            except ValueError:
+                print('%s enter a number within Id range !' %(self.out))
+                continue
+            else:
+                break
+        rep = db(db.checks.id == s_id).select()[0]
+        i_o.returns(rep['vol'], rep['cmr'], rep['cmp'], rep['name'])
+
 
     def do_bye(self, arg):
         print('terminating...')

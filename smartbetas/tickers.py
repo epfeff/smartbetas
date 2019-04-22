@@ -27,7 +27,7 @@ def save(ticks):
             else:
                 errors.append(item)
         else:
-            gbl.TICKERS.append(row[0].name)
+            gbl.TICKERS.append(row[0].ticker)
             gbl.NAMES.append(row[0].name)
     return errors
 
