@@ -1,4 +1,5 @@
 # -*- coding: UTF-8 -*-
+from datetime import datetime
 import gbl, api
 from db import db
 
@@ -32,10 +33,14 @@ def save(ticks):
     return errors
 
 def save_portfolio(vol, cmr, cmp, prices, name):
-    db.portfolio.insert(name = name,
+    db.portfolios.insert(name = name,
                         vol = vol,
                         cmr = cmr,
-                        )
+                        cmp = cmp,
+                        prc = prices,
+                        date = datetime.now())
+    db.commit()
+    return True
 
 if __name__ == '__main__':
     save(['GOOGL', 'APPL', 'TSLA'])

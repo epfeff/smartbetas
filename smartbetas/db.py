@@ -27,11 +27,6 @@ db.define_table('symbols',
                 Field('ticker', 'string'),
                 Field('name', 'string'))
 
-db.define_table('price',
-                Field('date', 'datetime'),
-                Field('ticker', 'string'),
-                Field('price', 'float'))
-
 db.define_table('checks',
                 Field('name', 'string'),
                 Field('vol', 'json'),

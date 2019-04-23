@@ -21,6 +21,26 @@ def portfolio(vol, cmr, cmp, prices):
         counter +=1
     print('%s' % ('-'.center(70, '-')))
 
+def portfolios(p_flo):
+    counter = 1
+    print('%s' % ('-'.center(70, '-')))
+    print('|%5s|%10s|%15s|%35s|' % ('Pos'.center(5),
+                                    'Date'.center(10),
+                                    'Name'.center(15),
+                                    'Tickers'.center(35)))
+    print('%s' % ('-'.center(70, '-')))
+    tickers = ''
+    for row in p_flo:
+        tickers = ', '.join(list(row['prc'].keys())[0:4])
+        tickers += '...' if len(tickers)>4 else ''
+        print('|%5s|%10s|%15s|%35s|' % (
+                                        str(counter).center(5),
+                                        str(row['date'])[:10].center(10),
+                                        row['name'].center(15),
+                                        str(tickers).center(35)))
+        counter += 1
+    print('%s' % ('-'.center(70, '-')))
+
 def investment(qty):
     if input(' Invest 100000K in each portefolio (y/n): ') == 'y':
         p_size = s_name = ''

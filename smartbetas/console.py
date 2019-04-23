@@ -41,9 +41,15 @@ class betacmd(cmd.Cmd):
 
         usage: show
         """
-        print('%s %s ticker(s) ready' % (self.out, len(gbl.TICKERS)))
-        for i, tick in enumerate(gbl.TICKERS):
-            print('%s %3s: %s -  %s' % (self.out, i, tick, gbl.NAMES[i]))
+        if arg == 'tickers':
+            print('%s %s ticker(s) ready' % (self.out, len(gbl.TICKERS)))
+            for i, tick in enumerate(gbl.TICKERS):
+                print('%s %3s: %s -  %s' % (self.out, i, tick, gbl.NAMES[i]))
+        elif arg == 'portfolio':
+            print('%s current portfolio' % (self.out))
+            i_o.portfolio(gbl.P_VOL, gbl.P_CMR, gbl.P_CMP, gbl.PRICES)
+        else:
+            print('%s specify what you want to see (tickers or portfolio)' % (self.out))
 
     def do_symbols(self, arg):
         """ Display tickers stored in the database
@@ -64,15 +70,16 @@ class betacmd(cmd.Cmd):
         """
         if len(gbl.TICKERS) > 0:
             compute.smartbetas(gbl.TICKERS)
-            if input('%s save portfolio (y/n)' % (self.out)) == 'y':
+            if input('%s save portfolio (y/n): ' % (self.out)) == 'y':
                 name = input('%s portfolio name: ' % (self.out))
-                tickers.save_portfolio(gbl.P_VOL, gbl.P_CMR, gbl.P_CMP, gbl.PRICES, name)
+                if tickers.save_portfolio(gbl.P_VOL, gbl.P_CMR, gbl.P_CMP, gbl.PRICES, name) == True:
+                    print('%s portfolio %s saved' % (self.out, name))
         else:
             print('%s load some tickers first (load filename)' % (self.out))
 
-    def do_portfolio(self, arg):
-        print('%s current portfolio' % (self.out))
-        i_o.portfolio(gbl.P_VOL, gbl.P_CMR, gbl.P_CMP, gbl.PRICES)
+    def do_portfolios(self, arg):
+        p_flo = db(db.portfolios).select(orderby=db.portfolios.date).as_list()
+        i_o.portfolios(p_flo)
 
     def do_invest(self, arg):
         p_size = 10 if len(gbl.P_VOL)>10 else len(gbl.P_VOL)
