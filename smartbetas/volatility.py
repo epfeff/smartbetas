@@ -13,8 +13,3 @@ def volatility(data):
         if item[0] >= two_y:
             vector.append(item[1])
     return stdev(vector)
-
-if __name__ == '__main__':
-
-
-    print(volatility([10, 12, 23, 23, 16, 23, 21, 16]))

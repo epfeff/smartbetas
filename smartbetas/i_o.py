@@ -24,7 +24,7 @@ def portfolio(vol, cmr, cmp, prices):
 def portfolios(p_flo):
     counter = 1
     print('%s' % ('-'.center(70, '-')))
-    print('|%5s|%10s|%15s|%35s|' % ('Pos'.center(5),
+    print('|%5s|%10s|%15s|%35s|' % ('id'.center(5),
                                     'Date'.center(10),
                                     'Name'.center(15),
                                     'Tickers'.center(35)))
@@ -34,7 +34,7 @@ def portfolios(p_flo):
         tickers = ', '.join(list(row['prc'].keys())[0:4])
         tickers += '...' if len(tickers)>4 else ''
         print('|%5s|%10s|%15s|%35s|' % (
-                                        str(counter).center(5),
+                                        str(row['id']).center(5),
                                         str(row['date'])[:10].center(10),
                                         row['name'].center(15),
                                         str(tickers).center(35)))
@@ -42,7 +42,7 @@ def portfolios(p_flo):
     print('%s' % ('-'.center(70, '-')))
 
 def investment(qty):
-    if input(' Invest 100000K in each portefolio (y/n): ') == 'y':
+    if input(" Invest 100'000 USD in each portefolio (y/n): ") == 'y':
         p_size = s_name = ''
         while (p_size.isdigit() == False):
             p_size = input(' Invest in the [x] top securities (%s): ' % (qty))
@@ -147,4 +147,30 @@ def reports(rep):
                                         str(row.date).center(25),
                                         row.name.center(25)))
         counter +=1
+    print('%s' % ('-'.center(70, '-')))
+
+def tickers(row):
+    counter = 1
+    print('%s' % ('-'.center(70, '-')))
+    print('|%5s|%20s|%20s|%20s|' % ('id'.center(5),
+                                    'vol'.center(20),
+                                    'mom'.center(20),
+                                    'comp'.center(20)))
+    print('%s' % ('-'.center(70, '-')))
+    for v, r, p in zip(row['vol'].keys(), row['cmr'].keys(), row['cmp'].keys()):
+        print('|%5s|%20s|%20s|%20s|' % (
+                                        str(counter).center(5),
+                                        v.center(20),
+                                        r.center(20),
+                                        p.center(20)))
+        v_name = db(db.symbols.ticker==v).select().as_list()[0]['name'][:18]
+        r_name = db(db.symbols.ticker==r).select().as_list()[0]['name'][:18]
+        p_name = db(db.symbols.ticker==p).select().as_list()[0]['name'][:18]
+        print('|%5s|%20s|%20s|%20s|' % (
+                                        str('').center(5),
+                                        v_name.center(20),
+                                        r_name.center(20),
+                                        p_name.center(20)))
+        counter += 1
+
     print('%s' % ('-'.center(70, '-')))
