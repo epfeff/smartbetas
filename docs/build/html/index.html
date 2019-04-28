@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Welcome to Smartbetas’s documentation! &#8212; Smartbetas 1.0 documentation</title>
+    <title>Welcome to SmartBetas’s documentation! &#8212; SmartBetas 0.1 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -31,9 +31,811 @@
           <div class="body" role="main">
             
   <div class="section" id="welcome-to-smartbetas-s-documentation">
-<h1>Welcome to Smartbetas’s documentation!<a class="headerlink" href="#welcome-to-smartbetas-s-documentation" title="Permalink to this headline">¶</a></h1>
+<h1>Welcome to SmartBetas’s documentation!<a class="headerlink" href="#welcome-to-smartbetas-s-documentation" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 </div>
+</div>
+<div class="section" id="smartbetas-application">
+<h1>SmartBetas Application<a class="headerlink" href="#smartbetas-application" title="Permalink to this headline">¶</a></h1>
+<p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__main__</span></code> is initiating the application and starting the console.</p>
+<p>The module checks if the required library is installed on the host and if
+the host is connected to the internet. If the tests succeed, it starts the
+user interface console.</p>
+<p>The program is built on a database, the communications between the program and
+the db is managed by pydal (Python Database Abstraction Layer). <code class="xref py py-mod docutils literal notranslate"><span class="pre">__main__</span></code>
+checks if <cite>pydal</cite> is installed on the host; if not, the program outputs a
+message and closes.</p>
+<p>The module will also check if the host is connected to the internet, this is
+required because the data used to compute portfolios is pulled from an API.
+If the host is not connected to the internet the program will close.</p>
+<p>The connectivity test is performed by trying to open a socket on google’s TCP
+port 80.</p>
+<p>This module also clears the console of whatever was currently displayed on it
+prior starting the console.</p>
+<span class="target" id="module-db"></span><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__db__</span></code> is used to handle the database in which the application is
+storing operations, tickers, portfolios and reports.</p>
+<p>The layer to manage the database is provided by <cite>pyDal</cite>, this is an open source
+python package acting as an abstraction layer between an application and a
+database.</p>
+<p><cite>pyDal</cite> can handle multiple types of database, in this case since there will
+not be intensive database operations we use sqlite3.</p>
+<p>When imported the module is checking if the <cite>db</cite> folder (located at the same
+level than the application folder) is present. The folder is created if not
+found.</p>
+<p>The database is then initialize with the following statement:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span><span class="o">+</span><span class="p">(</span><span class="s1">&#39;/db&#39;</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;nt&#39;</span> <span class="k">else</span> <span class="s1">&#39;\db&#39;</span><span class="p">)</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">DAL</span><span class="p">(</span><span class="s1">&#39;sqlite://storage.sqlite&#39;</span><span class="p">,</span> <span class="n">folder</span><span class="o">=</span><span class="n">folder</span><span class="p">,</span> <span class="n">migrate_enabled</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Where <cite>folder</cite> is the database location and <cite>migrate_enabled</cite> indicates to
+<cite>pyDal</cite> than it should not assume that the tables exists, but rather check and
+compare against the <cite>define_table</cite> statements.</p>
+<p>For this project we defined the following tables:</p>
+<p><strong>Investments</strong> - <cite>investments</cite>:
+Contains the investments made by the user, each entry features a <cite>date</cite>,
+a <cite>name</cite> a volatility based portfolio <cite>vol</cite>, a momentum based portfolio <cite>cmr</cite>, a
+composite based portfolio <cite>cmp</cite> and a register containing the prices of all
+the securities listed in each portfolio (the portfolios and the price register
+are stored in <cite>json</cite>).</p>
+<p><strong>Portfolios</strong> - <cite>portfolios</cite>:
+Contains the computed and ranked portfolios that the user chose to save after
+computing. Each entry features a <cite>date</cite>, a <cite>name</cite> a volatility based portfolio
+<cite>vol</cite>, a momentum based portfolio <cite>cmr</cite>, a composite based portfolio <cite>cmp</cite> and
+a register containing the prices of all the securities listed in each portfolio
+(the portfolios and the price register are stored in <cite>json</cite>).</p>
+<p><strong>Symbols</strong> - <cite>symbols</cite>:
+Contains the tickers and their corresponding names, each entry features a ticker
+<cite>ticker</cite> and a name <cite>name</cite>.</p>
+<p><strong>Checks</strong> - <cite>checks</cite>:
+Contains the reports of comparisons of portfolios (old vs now) generated by
+users and saved in the database for future usage. Each entry features a name
+<cite>name</cite>, a volatility based portfolio <cite>vol</cite>, a momentum based
+portfolio <cite>cmr</cite>, a composite based portfolio <cite>cmp</cite> and date <cite>date</cite>.
+(the portfolios are stored in <cite>json</cite>).</p>
+<p>The <cite>json</cite> structure for <cite>checks</cite> table is as follow:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span>{
+&quot;ACB&quot;: {
+    &quot;abs&quot;: -109.92,
+    &quot;date&quot;: &quot;2019-04-22 16:57:42&quot;,
+    &quot;new&quot;: 9.04,
+    &quot;old&quot;: 9.1,
+    &quot;qty&quot;: 1832,
+    &quot;rel&quot;: -0.66
+},
+&quot;AMD&quot;: {
+    &quot;abs&quot;: -30.81,
+    &quot;date&quot;: &quot;2019-04-22 16:57:42&quot;,
+    &quot;new&quot;: 27.88,
+    &quot;old&quot;: 27.9316,
+    &quot;qty&quot;: 597,
+    &quot;rel&quot;: -0.18
+},
+...
+</pre></div>
+</div>
+<span class="target" id="module-tickers"></span><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__tickers__</span></code> is handling operations related to tickers passed to the
+application by the user.</p>
+<p>The input of all the operations are dictated by the tickers provided by the
+user, this module is used to check the files provided by users and to write
+data into the database.</p>
+<dl class="function">
+<dt id="tickers.save">
+<code class="descclassname">tickers.</code><code class="descname">save</code><span class="sig-paren">(</span><em>ticks</em><span class="sig-paren">)</span><a class="headerlink" href="#tickers.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves the ticker’s name into the database and into the global ticker
+<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><cite>ticks</cite> : <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> of tickers <code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<p>The function will check for each ticker if an entry already exists in the
+database, if not, it will attempt to fetch the name from a web API.</p>
+<p>If the fetch is successfull, its result is written into the database to save
+time next time this ticker is used.</p>
+<p>The function also sets the global <cite>TICKERS</cite> and <cite>NAMES</cite> <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> with
+the tickers and their corresponding names.</p>
+<p>When a ticker can not be identified on the web API, it is dicarded and
+stored in a <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>.</p>
+<p>Returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> containing tickers that caused errors.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tickers.save_portfolio">
+<code class="descclassname">tickers.</code><code class="descname">save_portfolio</code><span class="sig-paren">(</span><em>vol</em>, <em>cmr</em>, <em>cmp</em>, <em>prices</em>, <em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#tickers.save_portfolio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes the computed portfolios into the databse.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><cite>vol</cite>  : <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> volatility portfolio.</p></li>
+<li><p><cite>cmr</cite>  : <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> momentum portfolio.</p></li>
+<li><p><cite>cmp</cite>  : <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> composite portfolio.</p></li>
+<li><p><cite>prices</cite> : <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> price register.</p></li>
+<li><p><cite>name</cite> : <code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code> name of the portfolio.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Saves into the database the items passed as argument.</p>
+<p>Returns <cite>True</cite> if it succeeded.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tickers.validate">
+<code class="descclassname">tickers.</code><code class="descname">validate</code><span class="sig-paren">(</span><em>raw</em><span class="sig-paren">)</span><a class="headerlink" href="#tickers.validate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the content of the data provided by the user.</p>
+<p>The user provides tickers to the application by writing them into a file
+that is loaded through the console interface with the &lt;load&gt; command.</p>
+<p>We expect the file to be filled with coma separated tickers <code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code>.</p>
+<p>It is necessary to check that the syntax of the file is correct prior
+passing this data further into the application to avoid errors.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><cite>raw</cite> : <code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code> content of the user provided file.</p></li>
+</ul>
+</dd>
+</dl>
+<p>The function strips the raw data from spaces, carrier returns and split the
+content around comas. It will also check if there was a trailing coma or if
+the user mistakenly put two comas instead of one.</p>
+<p>Returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> of sanitized tickers</p>
+</dd></dl>
+
+<span class="target" id="module-api"></span><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__api__</span></code> handles communications between the host and the web APIs.</p>
+<p>A web API is an Application Programming Interface for a web server or a web
+browser. On the server side, it consists or one or more publicly exposed
+endpoints accessible through <cite>http</cite> requests. The content is typically expressed
+in JSON (JavaScript Object Notation) or XML (eXtensible Markup Language).</p>
+<p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__smartbetas__</span></code> relies on two APIs. One is used to convert tickers to
+company names (As example: AAPL -&gt; Apple Inc), the second one is used to get
+information about a security (daily open, daily high, daily low, daily close and
+daily volume).</p>
+<p>The ticker API is totally free and open source, it is maintained by a single
+contributor (<a class="reference external" href="https://github.com/yashwanth2804">Kambala Yashwanth</a>), this API
+simply takes a ticker as input and returns the name of the equity if found.</p>
+<p>(<a class="reference external" href="https://www.alphavantage.co">Alpha Vantage</a>) provides the stock data API.
+This is not a free service, however they offer a free limited access to their
+data. The following constraints are applicable when using a free account:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>5 API requests per minute</p></li>
+<li><p>500 API requests per day</p></li>
+</ul>
+</div></blockquote>
+<p>Note that Alpha Vantage requires free users to register to get an API key. The
+key is stored in <code class="xref py py-mod docutils literal notranslate"><span class="pre">__gbl__</span></code>.</p>
+<dl class="function">
+<dt id="api.symbol">
+<code class="descclassname">api.</code><code class="descname">symbol</code><span class="sig-paren">(</span><em>tick</em><span class="sig-paren">)</span><a class="headerlink" href="#api.symbol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines the name of a security based on a ticker.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><cite>tick</cite> : <code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code>  security ticker.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Constructs the request URL with the ticker passed as argument then makes the
+request and parses the data received from the API.</p>
+<p>Data sample from the API: <code class="docutils literal notranslate"><span class="pre">[{&quot;symbol&quot;:&quot;AAPL&quot;,&quot;name&quot;:&quot;Apple</span> <span class="pre">Inc.&quot;}]</span></code></p>
+<p>This function is always called before the software tries to obtain stock
+data about a security, therefore it filters wrong/bad tickers provided by
+the user.</p>
+<p>Returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code> contraining the name of the security OR <code class="docutils literal notranslate"><span class="pre">None</span></code>
+if the API failed to return data for the ticker.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="api.tsd">
+<code class="descclassname">api.</code><code class="descname">tsd</code><span class="sig-paren">(</span><em>tick</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tsd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches a security daily data from 20 years ago till now.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><cite>tick</cite> : <code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code>  security ticker.</p></li>
+</ul>
+</dd>
+</dl>
+<p>The function makes the API call and parses the JSON, then to assert that
+data was indeed returned, it checks the length of the data:
+- l=2 : Data returned
+- l&lt;2 : No data returned</p>
+<p>If no data is returned, the function assumes that the maximum amount of
+calls per minute is reached; it will wait for 15 seconds and retry if it
+fails again it will wait again etc.. till data is returned.</p>
+<p>Note: The function can not handle the maximum amount of requests, if it is
+the case, it will loop forever.</p>
+<p>Data sample:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span>{
+&quot;Meta Data&quot;: {
+    &quot;1. Information&quot;: &quot;Daily Prices (open, high, low, close) Volumes&quot;,
+    &quot;2. Symbol&quot;: &quot;AAPL&quot;,
+    &quot;3. Last Refreshed&quot;: &quot;2019-04-26&quot;,
+    &quot;4. Output Size&quot;: &quot;Full size&quot;,
+    &quot;5. Time Zone&quot;: &quot;US/Eastern&quot;
+},
+&quot;Time Series (Daily)&quot;: {
+    &quot;2019-04-26&quot;: {
+        &quot;1. open&quot;: &quot;204.9000&quot;,
+        &quot;2. high&quot;: &quot;205.0000&quot;,
+        &quot;3. low&quot;: &quot;202.1200&quot;,
+        &quot;4. close&quot;: &quot;204.3000&quot;,
+        &quot;5. volume&quot;: &quot;18611948&quot;
+    },
+    ...
+</pre></div>
+</div>
+<p>Once the data was obtained, the function will create a <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> of
+tuple containing in each position a datetime object and the closing price
+of the security. (List starts with the date closest to now)</p>
+<p>List sample : <code class="docutils literal notranslate"><span class="pre">[(datetime.datetime(2019,</span> <span class="pre">4,</span> <span class="pre">18,</span> <span class="pre">0,</span> <span class="pre">0),</span> <span class="pre">203.86)]</span></code></p>
+<p>Returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code> with date and closing price.</p>
+</dd></dl>
+
+<span class="target" id="module-compute"></span><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__compute__</span></code> is used to compute volatility, momentum and composite
+based porfolio.</p>
+<p>This module gets from the stock data API the security closing value and
+computes for each security the volatility and the momentum.</p>
+<p>Based on the security ranking it also computes a composite portfolio.</p>
+<p>To expedite things, this module uses python’s <cite>concurrent.futures</cite> to fetch
+data from the API in a parallel fashion. This is done to save time as <cite>HTTP</cite>
+requests take time no matter how poweful the host running the code is.</p>
+<dl class="function">
+<dt id="compute.compute">
+<code class="descclassname">compute.</code><code class="descname">compute</code><span class="sig-paren">(</span><em>tick</em><span class="sig-paren">)</span><a class="headerlink" href="#compute.compute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the volatility, momentum and price of a ticker.</p>
+<p>This function gets the tickers data with the <a class="reference internal" href="#api.tsd" title="api.tsd"><code class="xref py py-func docutils literal notranslate"><span class="pre">api.tsd()</span></code></a>, the volatility
+with <code class="xref py py-func docutils literal notranslate"><span class="pre">volatility.volability()</span></code> and the momentum with the module
+<a class="reference internal" href="#cumulative.ret" title="cumulative.ret"><code class="xref py py-func docutils literal notranslate"><span class="pre">cumulative.ret()</span></code></a>.</p>
+<p>These function calls are segregated into this function to enable parallel
+processing.</p>
+<p>Returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> containing the volatility, the momentum and the
+price of a ticker.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="compute.smartbetas">
+<code class="descclassname">compute.</code><code class="descname">smartbetas</code><span class="sig-paren">(</span><em>tickers</em><span class="sig-paren">)</span><a class="headerlink" href="#compute.smartbetas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds three portfolios based on volatility, momentum and a composite
+score.</p>
+<p>Parameters:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>tickers</cite> : <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>  of tickers to compute</p></li>
+</ul>
+</div></blockquote>
+<p>Uses <code class="docutils literal notranslate"><span class="pre">ProcessPoolExecutor</span></code> to perform for each ticker the following tasks
+in parallel (using the function <a class="reference internal" href="#compute.compute" title="compute.compute"><code class="xref py py-func docutils literal notranslate"><span class="pre">compute.compute()</span></code></a>):</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Get data from the web API - <a class="reference internal" href="#api.tsd" title="api.tsd"><code class="xref py py-func docutils literal notranslate"><span class="pre">api.tsd()</span></code></a></p></li>
+<li><p>Compute volatility - <a class="reference internal" href="#volatility.volatility" title="volatility.volatility"><code class="xref py py-func docutils literal notranslate"><span class="pre">volatility.volatility()</span></code></a></p></li>
+<li><p>Compute momentum - <a class="reference internal" href="#cumulative.ret" title="cumulative.ret"><code class="xref py py-func docutils literal notranslate"><span class="pre">cumulative.ret()</span></code></a></p></li>
+</ul>
+</div></blockquote>
+<p>The output of the parallel processing is stored in a <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>
+containing for each ticker a <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">tuples</span></code>.</p>
+<p>Sample:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[[(</span><span class="s1">&#39;t1&#39;</span><span class="p">,</span> <span class="n">volatility</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;t1&#39;</span><span class="p">,</span> <span class="n">momentum</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;t1&#39;</span><span class="p">,</span> <span class="n">price</span><span class="p">)],</span>
+    <span class="p">[(</span><span class="s1">&#39;t2&#39;</span><span class="p">,</span> <span class="n">vol</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;t2&#39;</span><span class="p">,</span> <span class="n">vol</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;t2&#39;</span><span class="p">,</span> <span class="n">vol</span><span class="p">)]]</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>The volability portfolio is built by sorting the <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> in an
+ascending fashion and extracting only the tickers and their volatility.</p>
+<p>The momentum portfolio is built by sorting the <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> in a
+descending fashion and extracting the tickers and their momentum.</p>
+<p>The prices are also extracted to allow for future comparisons against the
+market prices.</p>
+<p>The composite portfolio is computed with <a class="reference internal" href="#composite.composite" title="composite.composite"><code class="xref py py-func docutils literal notranslate"><span class="pre">composite.composite()</span></code></a>.</p>
+<p>The results are stored in the global variables.</p>
+<p>Returns nothing</p>
+</dd></dl>
+
+<span class="target" id="module-volatility"></span><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__volatility__</span></code> is used to compute the volatility of a security.</p>
+<p>In this application, momentum is considered on a period between two years ago
+and now.</p>
+<p>To calculate the volatility, a standard deviation needs to be performed. To do
+so we use the standard python’s statistics package.</p>
+<dl class="function">
+<dt id="volatility.volatility">
+<code class="descclassname">volatility.</code><code class="descname">volatility</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#volatility.volatility" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the volatility of a security.</p>
+<p>Parameters:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>data</cite> : <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>  of <code class="xref py py-class docutils literal notranslate"><span class="pre">tuples</span></code></p></li>
+</ul>
+</div></blockquote>
+<p>Note: The function argument is built by <a class="reference internal" href="#api.tsd" title="api.tsd"><code class="xref py py-func docutils literal notranslate"><span class="pre">api.tsd()</span></code></a>, it is
+structured as follow: <code class="docutils literal notranslate"><span class="pre">[(datetime.datetime(2019,</span> <span class="pre">4,</span> <span class="pre">18,</span> <span class="pre">0,</span> <span class="pre">0),</span> <span class="pre">203.86)]</span></code> .</p>
+<p>The function uses <code class="xref py py-mod docutils literal notranslate"><span class="pre">__datetime__</span></code> to determine the dates between which
+the volatility shall be calculated. A new <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> containing only the
+values to consider (the ones within the right time frame). The constructed
+list is then passed to <cite>statistics.stdev</cite> to compute the deviation.</p>
+<p>Returns a the volatility of the security (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>)</p>
+</dd></dl>
+
+<span class="target" id="module-cumulative"></span><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__cumulative__</span></code> is used to compute cumulative returns; also known as
+momentum.</p>
+<p>In this application, momentum is considered as the returns on a period between
+12 months ago and 2 months ago.</p>
+<p>All the date and time operations are handled with python’s standard
+<cite>datetime</cite> module.</p>
+<dl class="function">
+<dt id="cumulative.momentum">
+<code class="descclassname">cumulative.</code><code class="descname">momentum</code><span class="sig-paren">(</span><em>vector</em><span class="sig-paren">)</span><a class="headerlink" href="#cumulative.momentum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the momentum of a vector.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><cite>vector</cite> : <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>  of <code class="xref py py-class docutils literal notranslate"><span class="pre">floats</span></code></p></li>
+</ul>
+</dd>
+<dt>The function computes the returns of the data passed as argument:</dt><dd><ul class="simple">
+<li><p>momentum = 100*(new - old)/old</p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns the momentum of the vector (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cumulative.ret">
+<code class="descclassname">cumulative.</code><code class="descname">ret</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#cumulative.ret" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the cumulative returns (momentum) of a security.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><cite>data</cite> : <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>  of <code class="xref py py-class docutils literal notranslate"><span class="pre">tuples</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<p>Note: The function argument is built by <a class="reference internal" href="#api.tsd" title="api.tsd"><code class="xref py py-func docutils literal notranslate"><span class="pre">api.tsd()</span></code></a>, it is
+structured as follow: <code class="docutils literal notranslate"><span class="pre">[(datetime.datetime(2019,</span> <span class="pre">4,</span> <span class="pre">18,</span> <span class="pre">0,</span> <span class="pre">0),</span> <span class="pre">203.86)]</span></code> .</p>
+<p>The function uses <code class="xref py py-mod docutils literal notranslate"><span class="pre">__datetime__</span></code> to determine the dates between which
+the momentum shall be calculated. A new <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> containing only the
+values to consider (the ones within the right time frame) is built and
+passed to <a class="reference internal" href="#cumulative.momentum" title="cumulative.momentum"><code class="xref py py-func docutils literal notranslate"><span class="pre">cumulative.momentum()</span></code></a>.</p>
+<p>Returns a the momentum of the security (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>)</p>
+</dd></dl>
+
+<span class="target" id="module-composite"></span><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__composite__</span></code> is used to determine a composite portfolio.</p>
+<p>In this application we define a composite portfolio as a portfolio based on the
+ranking of a security in the volatility portfolio and in the momentum portfolio.</p>
+<p>The score of security is the sum of its index (position) in the two other
+portfolio. The securities are then sorted in an ascending fasion.</p>
+<dl class="function">
+<dt id="composite.composite">
+<code class="descclassname">composite.</code><code class="descname">composite</code><span class="sig-paren">(</span><em>vol</em>, <em>cmr</em><span class="sig-paren">)</span><a class="headerlink" href="#composite.composite" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ranks securities in a composite fashion.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><cite>vol</cite> : <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>  volatility portfolio.</p></li>
+<li><p><cite>cmr</cite> : <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>  momentum portfolio.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Note: at this point, the two portfolios have the same tickers, only their
+ranking varies.</p>
+<p>The function builds a <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> with the tickers and set their score
+to zero; sample {‘ticker’: 0}. Then it adds to the ticker score their index
+in volatility and momentum portfolio.</p>
+<dl>
+<dt>To rank the tickers, the <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> is transformed into a <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>,</dt><dd><p>sorted and transformed back into a <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>.</p>
+<p>Returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> containing tickers and their score.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="module-money"></span><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__money__</span></code> is handle investments in the computed portfolios.</p>
+<p>In the application, when a user requested to compute portfolios based on the
+tickers he provided, he can choose to invest money in the portfolios to be
+able to check them later on.</p>
+<p>For now one can only invest 100‘000 USD in each portfolio with a reparatition
+of 1/n where n is the amount of tickers in a portfolio.</p>
+<dl class="function">
+<dt id="money.invest">
+<code class="descclassname">money.</code><code class="descname">invest</code><span class="sig-paren">(</span><em>p_size</em>, <em>p_vol</em>, <em>p_cmr</em>, <em>p_cmp</em>, <em>prices</em>, <em>s_name</em>, <em>stack=100000</em><span class="sig-paren">)</span><a class="headerlink" href="#money.invest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invests 100‘000 USD in each computed portfolio.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><cite>p_size</cite> : <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code> amount of tickers per portfolio.</p></li>
+<li><p><cite>p_vol</cite>  : <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> volatility portfolio.</p></li>
+<li><p><cite>p_cmr</cite>  : <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> momentum portfolio.</p></li>
+<li><p><cite>p_cmp</cite>  : <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> composite portfolio.</p></li>
+<li><p><cite>prices</cite> : <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> price register.</p></li>
+<li><p><cite>s_name</cite> : <code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code> name of the investment.</p></li>
+<li><p><cite>stack</cite>  : <code class="xref py py-class docutils literal notranslate"><span class="pre">ìnt</span></code> defaults to 100000, money to invest.</p></li>
+</ul>
+</dd>
+</dl>
+<p>For each portfolio, the function determines to max amount of shares that
+can be purchased and builds a <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> of tickers and quantity of
+shares.</p>
+<p>The function then stores the outcomes into the database, the prices of the
+securities are also stored for future usage.</p>
+<p>Returns nothing.</p>
+</dd></dl>
+
+<span class="target" id="module-console"></span><p><a class="reference internal" href="#module-console" title="console"><code class="xref py py-mod docutils literal notranslate"><span class="pre">console</span></code></a> is used to have a neat console interface.</p>
+<p>The user interface is built on top of python’s standard <cite>cmd</cite> module.</p>
+<p>The console interface inherits pretty much everything from the standard cmd
+<cite>class</cite>. The following parameters are modified:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>intro</cite>   : ‘Smart Betas Investing - Requires an internet connection’</p></li>
+<li><p><cite>prompt</cite>  : (beta)</p></li>
+</ul>
+</div></blockquote>
+<p>A new parameter is introduced:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>‘out’     : <cite>‘–&gt;’</cite>, this string preceeds outputs on the console</p></li>
+</ul>
+</div></blockquote>
+<dl class="class">
+<dt id="console.betacmd">
+<em class="property">class </em><code class="descclassname">console.</code><code class="descname">betacmd</code><span class="sig-paren">(</span><em>completekey='tab'</em>, <em>stdin=None</em>, <em>stdout=None</em><span class="sig-paren">)</span><a class="headerlink" href="#console.betacmd" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="console.betacmd.do_bye">
+<code class="descname">do_bye</code><span class="sig-paren">(</span><em>arg</em><span class="sig-paren">)</span><a class="headerlink" href="#console.betacmd.do_bye" title="Permalink to this definition">¶</a></dt>
+<dd><p>Terminates the program.</p>
+<p>usage: bye</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="console.betacmd.do_check">
+<code class="descname">do_check</code><span class="sig-paren">(</span><em>arg</em><span class="sig-paren">)</span><a class="headerlink" href="#console.betacmd.do_check" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a short report detailling returns for an investment</p>
+<p>usage: check</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="console.betacmd.do_compute">
+<code class="descname">do_compute</code><span class="sig-paren">(</span><em>arg</em><span class="sig-paren">)</span><a class="headerlink" href="#console.betacmd.do_compute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes tickers in the pipe into a portfolio</p>
+<p>usage: compute</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="console.betacmd.do_invest">
+<code class="descname">do_invest</code><span class="sig-paren">(</span><em>arg</em><span class="sig-paren">)</span><a class="headerlink" href="#console.betacmd.do_invest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invest 100‘000 USD into each of the calculated portfolio.</p>
+<p>usage: invest</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="console.betacmd.do_load">
+<code class="descname">do_load</code><span class="sig-paren">(</span><em>arg</em><span class="sig-paren">)</span><a class="headerlink" href="#console.betacmd.do_load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads a file containing tickers</p>
+<p>usage: load &lt;FILENAME&gt;</p>
+<p>Tickers in the file should be coma separated.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="console.betacmd.do_portfolios">
+<code class="descname">do_portfolios</code><span class="sig-paren">(</span><em>arg</em><span class="sig-paren">)</span><a class="headerlink" href="#console.betacmd.do_portfolios" title="Permalink to this definition">¶</a></dt>
+<dd><p>Displays stored portfolios</p>
+<p>Users can select a portfolio, view its securities and/or invest in it.</p>
+<p>usage: portfolios</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="console.betacmd.do_report">
+<code class="descname">do_report</code><span class="sig-paren">(</span><em>arg</em><span class="sig-paren">)</span><a class="headerlink" href="#console.betacmd.do_report" title="Permalink to this definition">¶</a></dt>
+<dd><p>Displays previously generated reports</p>
+<p>usage: report</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="console.betacmd.do_show">
+<code class="descname">do_show</code><span class="sig-paren">(</span><em>arg</em><span class="sig-paren">)</span><a class="headerlink" href="#console.betacmd.do_show" title="Permalink to this definition">¶</a></dt>
+<dd><p>Displays information to the user.</p>
+<p>tickers: shows the list of tickers loaded to build a portfolio.</p>
+<p>portfolio: shows the session portfolio (after &lt;compute&gt;)</p>
+<p>invest: shows the investment sessions performed by the user.</p>
+<p>usage: show &lt;tickers/portfolio/invest&gt;</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="console.betacmd.do_symbols">
+<code class="descname">do_symbols</code><span class="sig-paren">(</span><em>arg</em><span class="sig-paren">)</span><a class="headerlink" href="#console.betacmd.do_symbols" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display tickers stored in the database</p>
+<p>usage: symbols</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="console.betacmd.emptyline">
+<code class="descname">emptyline</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#console.betacmd.emptyline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called when an empty line is entered in response to the prompt.</p>
+<p>If this method is not overridden, it repeats the last nonempty
+command entered.</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-check"></span><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__check__</span></code> is used to determine the returns of an investment.</p>
+<p>This module fetches from the stock data API today’s securities values and
+compares them with the data from a previous investment session stored in the
+database. (API data provided through <a class="reference internal" href="#api.tsd" title="api.tsd"><code class="xref py py-func docutils literal notranslate"><span class="pre">api.tsd()</span></code></a> )</p>
+<p>To expedite things, this module uses python’s <cite>concurrent.futures</cite> to fetch
+data from the API in a parallel fashion. This is done to save time as <cite>HTTP</cite>
+requests take time no matter how poweful the host running the code is.</p>
+<dl class="function">
+<dt id="check.get_price">
+<code class="descclassname">check.</code><code class="descname">get_price</code><span class="sig-paren">(</span><em>tick</em><span class="sig-paren">)</span><a class="headerlink" href="#check.get_price" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the current price of a security.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><ul class="simple">
+<li><p><cite>tick</cite> : <code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code>  security ticker</p></li>
+</ul>
+</dd>
+</dl>
+<p>Fetches the latest price of the ticker from the stock api. The result is
+stored in a <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code> : <code class="docutils literal notranslate"><span class="pre">`('ticker',</span> <span class="pre">149)</span></code></p>
+<p>Returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code> containing the ticker and its latest price.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="check.returns">
+<code class="descclassname">check.</code><code class="descname">returns</code><span class="sig-paren">(</span><em>inv</em>, <em>pfl</em>, <em>prices</em><span class="sig-paren">)</span><a class="headerlink" href="#check.returns" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the return of a portfolio.</p>
+<p>Parameters:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>inv</cite>     : <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> past investment session row from the db</p></li>
+<li><p><cite>pfl</cite>     : <code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code> name of the portfolio</p></li>
+<li><p><cite>prices</cite>  : <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> latest investment’s ticker prices</p></li>
+</ul>
+</div></blockquote>
+<p>Computes the absolute change and the returns for each ticker in the
+portfolio. These values are calculated as follow:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Absolute change : (qty <em>new) - (qty * old) (*rounded at 2 digits</em>)</p></li>
+<li><p>Returns         : [(new-old)/old*100] (<em>rounded at 2 digits</em>)</p></li>
+</ul>
+</div></blockquote>
+<p>The total absolute change and return is handled by
+<a class="reference internal" href="#check.t_returns" title="check.t_returns"><code class="xref py py-func docutils literal notranslate"><span class="pre">check.t_returns()</span></code></a>.</p>
+<p>Returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> containing for each ticker the initial price,
+the new price, the absolute change, the returns, the quantity of shares and
+the date of the purchase.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="check.sessions">
+<code class="descclassname">check.</code><code class="descname">sessions</code><span class="sig-paren">(</span><em>id</em><span class="sig-paren">)</span><a class="headerlink" href="#check.sessions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines returns of an investment session.</p>
+<p>Parameters:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>id</cite> : <code class="xref py py-class docutils literal notranslate"><span class="pre">integer</span></code>  investment session database id.</p></li>
+</ul>
+</div></blockquote>
+<p>Uses <code class="docutils literal notranslate"><span class="pre">ProcessPoolExecutor</span></code> to request in parallel the latest prices of
+each tickers using <a class="reference internal" href="#check.get_price" title="check.get_price"><code class="xref py py-func docutils literal notranslate"><span class="pre">check.get_price()</span></code></a> and stores the results in
+a <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> :  <code class="docutils literal notranslate"><span class="pre">{'ticker1':</span> <span class="pre">100,</span> <span class="pre">'ticker2':</span> <span class="pre">200}</span></code>.</p>
+<p>The returns of the portfolios are calculated by <a class="reference internal" href="#check.returns" title="check.returns"><code class="xref py py-func docutils literal notranslate"><span class="pre">check.returns()</span></code></a>.</p>
+<p>Once the returns are calculated, the results are saved in the database, this
+is to allow users to consults the results later on without having the
+re-compute the returns or query any data from the API.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><ul class="simple">
+<li><p><cite>r_vol</cite>       : <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>  Returns of the volability portfolio.</p></li>
+<li><p><cite>r_cmr</cite>       : <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>  Returns of the momentum portfolio.</p></li>
+<li><p><cite>r_cmp</cite>       : <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>  Returns of the composite portfolio.</p></li>
+<li><p><cite>inv[‘name’]</cite> : <code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code>  investment session name.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="check.t_returns">
+<code class="descclassname">check.</code><code class="descname">t_returns</code><span class="sig-paren">(</span><em>inv</em>, <em>pfl</em>, <em>prices</em>, <em>date</em><span class="sig-paren">)</span><a class="headerlink" href="#check.t_returns" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the total return of a portfolio.</p>
+<p>Parameters:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>inv</cite>     : <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> past investment session row from the db</p></li>
+<li><p><cite>pfl</cite>     : <code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code> name of the portfolio</p></li>
+<li><p><cite>prices</cite>  : <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> latest investment’s ticker prices</p></li>
+<li><p><cite>date</cite>    : <code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code> date of the purchase</p></li>
+</ul>
+</div></blockquote>
+<p>Computes the sum of the initial portfolio value and the sum of the current
+portfolio value. Based on the sums, it computes the absolute change and the
+returns using the same formula as in <a class="reference internal" href="#check.returns" title="check.returns"><code class="xref py py-func docutils literal notranslate"><span class="pre">check.returns()</span></code></a>.</p>
+<p>Returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> containing the total initial price, the new
+price, the absolute change, the returns and the date of the purchase.</p>
+</dd></dl>
+
+<span class="target" id="module-i_o"></span><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__i_o__</span></code> is handle inputs and outputs generated from the console by
+the user.</p>
+<dl class="function">
+<dt id="i_o.investment">
+<code class="descclassname">i_o.</code><code class="descname">investment</code><span class="sig-paren">(</span><em>qty</em><span class="sig-paren">)</span><a class="headerlink" href="#i_o.investment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prompts instructions to guide a user to invest 100‘000 USD into a
+portfolio.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>(beta): invest
+ Invest 100&#39;000 USD in each portefolio (y/n): y
+ Invest in the [x] top securities (1): 1
+ Name of the investment : Glorious Investment
+</pre></div>
+</div>
+<p>Returns nothing.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="i_o.portfolio">
+<code class="descclassname">i_o.</code><code class="descname">portfolio</code><span class="sig-paren">(</span><em>vol</em>, <em>cmr</em>, <em>cmp</em>, <em>prices</em><span class="sig-paren">)</span><a class="headerlink" href="#i_o.portfolio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Displays a computed portfolio.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>----------------------------------------------------------------------
+<span class="p">|</span> Pos <span class="p">|</span>     Volatility     <span class="p">|</span>      Momentum      <span class="p">|</span>     Composite      <span class="p">|</span>
+----------------------------------------------------------------------
+<span class="p">|</span>  <span class="m">1</span>  <span class="p">|</span>   AAPL     <span class="m">21</span>.98   <span class="p">|</span>   AAPL     <span class="m">5</span>.88 %  <span class="p">|</span>   AAPL    <span class="m">204</span>.3 $  <span class="p">|</span>
+<span class="p">|</span>  <span class="m">2</span>  <span class="p">|</span>   TSLA     <span class="m">29</span>.98   <span class="p">|</span>   TSLA     <span class="m">0</span>.3 %   <span class="p">|</span>   TSLA    <span class="m">235</span>.14 $ <span class="p">|</span>
+----------------------------------------------------------------------
+</pre></div>
+</div>
+<p>Returns nothing.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="i_o.portfolios">
+<code class="descclassname">i_o.</code><code class="descname">portfolios</code><span class="sig-paren">(</span><em>p_flo</em><span class="sig-paren">)</span><a class="headerlink" href="#i_o.portfolios" title="Permalink to this definition">¶</a></dt>
+<dd><p>Displays a table listing all the saved portfolios.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>----------------------------------------------------------------------
+<span class="p">|</span>  id <span class="p">|</span>   Date   <span class="p">|</span>      Name     <span class="p">|</span>              Tickers              <span class="p">|</span>
+----------------------------------------------------------------------
+<span class="p">|</span>  <span class="m">1</span>  <span class="p">|</span><span class="m">2019</span>-04-23<span class="p">|</span>   Apple Test  <span class="p">|</span>                AAPL               <span class="p">|</span>
+<span class="p">|</span>  <span class="m">2</span>  <span class="p">|</span><span class="m">2019</span>-04-23<span class="p">|</span>   Test Apple  <span class="p">|</span>                AAPL               <span class="p">|</span>
+<span class="p">|</span>  <span class="m">3</span>  <span class="p">|</span><span class="m">2019</span>-04-23<span class="p">|</span>      Test     <span class="p">|</span>                AAPL               <span class="p">|</span>
+<span class="p">|</span>  <span class="m">4</span>  <span class="p">|</span><span class="m">2019</span>-04-23<span class="p">|</span> <span class="m">14</span> Tickers ftw<span class="p">|</span>      AMD, ACB, GWW, GOOGL...      <span class="p">|</span>
+<span class="p">|</span>  <span class="m">5</span>  <span class="p">|</span><span class="m">2019</span>-04-27<span class="p">|</span>   Apple Only  <span class="p">|</span>                AAPL               <span class="p">|</span>
+<span class="p">|</span>  <span class="m">6</span>  <span class="p">|</span><span class="m">2019</span>-04-27<span class="p">|</span>  Apple Tesla  <span class="p">|</span>           AAPL, TSLA...           <span class="p">|</span>
+----------------------------------------------------------------------
+</pre></div>
+</div>
+<p>Returns nothing.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="i_o.reports">
+<code class="descclassname">i_o.</code><code class="descname">reports</code><span class="sig-paren">(</span><em>rep</em><span class="sig-paren">)</span><a class="headerlink" href="#i_o.reports" title="Permalink to this definition">¶</a></dt>
+<dd><p>Displays a listing all the previously saved reports.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>----------------------------------------------------------------------
+<span class="p">|</span> Pos <span class="p">|</span>    Id    <span class="p">|</span>           Date          <span class="p">|</span>           Name          <span class="p">|</span>
+----------------------------------------------------------------------
+<span class="p">|</span>  <span class="m">1</span>  <span class="p">|</span>    <span class="m">1</span>     <span class="p">|</span>        <span class="m">2019</span>-04-26       <span class="p">|</span>       <span class="m">6</span> Big Stuffs      <span class="p">|</span>
+<span class="p">|</span>  <span class="m">2</span>  <span class="p">|</span>    <span class="m">2</span>     <span class="p">|</span>        <span class="m">2019</span>-04-27       <span class="p">|</span>       <span class="m">6</span> Big Stuffs      <span class="p">|</span>
+<span class="p">|</span>  <span class="m">3</span>  <span class="p">|</span>    <span class="m">3</span>     <span class="p">|</span>        <span class="m">2019</span>-04-27       <span class="p">|</span>           Test          <span class="p">|</span>
+<span class="p">|</span>  <span class="m">4</span>  <span class="p">|</span>    <span class="m">4</span>     <span class="p">|</span>        <span class="m">2019</span>-04-27       <span class="p">|</span>       <span class="m">6</span> Big Stuffs      <span class="p">|</span>
+<span class="p">|</span>  <span class="m">5</span>  <span class="p">|</span>    <span class="m">5</span>     <span class="p">|</span>        <span class="m">2019</span>-04-28       <span class="p">|</span>         One One         <span class="p">|</span>
+----------------------------------------------------------------------
+</pre></div>
+</div>
+<p>Returns nothing.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="i_o.returns">
+<code class="descclassname">i_o.</code><code class="descname">returns</code><span class="sig-paren">(</span><em>vol</em>, <em>cmr</em>, <em>cmp</em>, <em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#i_o.returns" title="Permalink to this definition">¶</a></dt>
+<dd><p>Displays a report with the returns for each portfolio.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>--------------------------------------------------------------------------------
+                                One One - Report
+--------------------------------------------------------------------------------
+                           Volatility Based Portfolio
+--------------------------------------------------------------------------------
+<span class="p">|</span> Ticker <span class="p">|</span>N Shares<span class="p">|</span> Purchase Date <span class="p">|</span>  Initial  <span class="p">|</span>  Current  <span class="p">|</span> Abs Change<span class="p">|</span>Returns <span class="p">|</span>
+--------------------------------------------------------------------------------
+<span class="p">|</span>  MBRX  <span class="p">|</span> <span class="m">12270</span>  <span class="p">|</span>   <span class="m">2019</span>-04-27  <span class="p">|</span>   <span class="m">1</span>.63 $  <span class="p">|</span>   <span class="m">1</span>.42 $  <span class="p">|</span> -2576.7 $ <span class="p">|</span>-12.88 %<span class="p">|</span>
+<span class="p">|</span>  RAD   <span class="p">|</span>  <span class="m">1992</span>  <span class="p">|</span>   <span class="m">2019</span>-04-27  <span class="p">|</span> <span class="m">10</span>.0401 $ <span class="p">|</span>   <span class="m">9</span>.08 $  <span class="p">|</span> -1912.52 $<span class="p">|</span>-9.56 % <span class="p">|</span>
+<span class="p">|</span>  KEYW  <span class="p">|</span>  <span class="m">1784</span>  <span class="p">|</span>   <span class="m">2019</span>-04-27  <span class="p">|</span>  <span class="m">11</span>.21 $  <span class="p">|</span>   <span class="m">11</span>.3 $  <span class="p">|</span>  <span class="m">160</span>.56 $ <span class="p">|</span> <span class="m">0</span>.8 %  <span class="p">|</span>
+<span class="p">|</span>  ACB   <span class="p">|</span>  <span class="m">2212</span>  <span class="p">|</span>   <span class="m">2019</span>-04-27  <span class="p">|</span>  <span class="m">9</span>.0396 $ <span class="p">|</span>   <span class="m">9</span>.04 $  <span class="p">|</span>   <span class="m">0</span>.88 $  <span class="p">|</span> <span class="m">0</span>.0 %  <span class="p">|</span>
+<span class="p">|</span>  STLD  <span class="p">|</span>  <span class="m">609</span>   <span class="p">|</span>   <span class="m">2019</span>-04-27  <span class="p">|</span>  <span class="m">32</span>.86 $  <span class="p">|</span>  <span class="m">31</span>.58 $  <span class="p">|</span> -779.52 $ <span class="p">|</span> -3.9 % <span class="p">|</span>
+<span class="p">|</span> Total  <span class="p">|</span>   NA   <span class="p">|</span>   <span class="m">2019</span>-04-27  <span class="p">|</span> <span class="m">100006</span>.0 $<span class="p">|</span> <span class="m">94898</span>.7 $ <span class="p">|</span> -5107.3 $ <span class="p">|</span>-5.11 % <span class="p">|</span>
+--------------------------------------------------------------------------------
+                            Momentum Based Portfolio
+--------------------------------------------------------------------------------
+<span class="p">|</span> Ticker <span class="p">|</span>N Shares<span class="p">|</span> Purchase Date <span class="p">|</span>  Initial  <span class="p">|</span>  Current  <span class="p">|</span> Abs Change<span class="p">|</span>Returns <span class="p">|</span>
+--------------------------------------------------------------------------------
+<span class="p">|</span>  AMD   <span class="p">|</span>  <span class="m">717</span>   <span class="p">|</span>   <span class="m">2019</span>-04-27  <span class="p">|</span>  <span class="m">27</span>.89 $  <span class="p">|</span>  <span class="m">27</span>.88 $  <span class="p">|</span>  -7.17 $  <span class="p">|</span>-0.04 % <span class="p">|</span>
+<span class="p">|</span>  ACB   <span class="p">|</span>  <span class="m">2212</span>  <span class="p">|</span>   <span class="m">2019</span>-04-27  <span class="p">|</span>  <span class="m">9</span>.0396 $ <span class="p">|</span>   <span class="m">9</span>.04 $  <span class="p">|</span>   <span class="m">0</span>.88 $  <span class="p">|</span> <span class="m">0</span>.0 %  <span class="p">|</span>
+<span class="p">|</span>  GWW   <span class="p">|</span>   <span class="m">69</span>   <span class="p">|</span>   <span class="m">2019</span>-04-27  <span class="p">|</span> <span class="m">291</span>.015 $ <span class="p">|</span>  <span class="m">291</span>.91 $ <span class="p">|</span>  <span class="m">61</span>.76 $  <span class="p">|</span> <span class="m">0</span>.31 % <span class="p">|</span>
+<span class="p">|</span> GOOGL  <span class="p">|</span>   <span class="m">16</span>   <span class="p">|</span>   <span class="m">2019</span>-04-27  <span class="p">|</span> <span class="m">1264</span>.28 $ <span class="p">|</span> <span class="m">1277</span>.42 $ <span class="p">|</span>  <span class="m">210</span>.24 $ <span class="p">|</span> <span class="m">1</span>.04 % <span class="p">|</span>
+<span class="p">|</span>  BABA  <span class="p">|</span>  <span class="m">107</span>   <span class="p">|</span>   <span class="m">2019</span>-04-27  <span class="p">|</span> <span class="m">186</span>.7425 $<span class="p">|</span>  <span class="m">187</span>.09 $ <span class="p">|</span>  <span class="m">37</span>.18 $  <span class="p">|</span> <span class="m">0</span>.19 % <span class="p">|</span>
+<span class="p">|</span> Total  <span class="p">|</span>   NA   <span class="p">|</span>   <span class="m">2019</span>-04-27  <span class="p">|</span> <span class="m">100282</span>.7 $<span class="p">|</span> <span class="m">100585</span>.6 $<span class="p">|</span>  <span class="m">302</span>.9 $  <span class="p">|</span> <span class="m">0</span>.3 %  <span class="p">|</span>
+--------------------------------------------------------------------------------
+                           Composite Based Portfolio
+--------------------------------------------------------------------------------
+<span class="p">|</span> Ticker <span class="p">|</span>N Shares<span class="p">|</span> Purchase Date <span class="p">|</span>  Initial  <span class="p">|</span>  Current  <span class="p">|</span> Abs Change<span class="p">|</span>Returns <span class="p">|</span>
+--------------------------------------------------------------------------------
+<span class="p">|</span>  ACB   <span class="p">|</span>  <span class="m">2212</span>  <span class="p">|</span>   <span class="m">2019</span>-04-27  <span class="p">|</span>  <span class="m">9</span>.0396 $ <span class="p">|</span>   <span class="m">9</span>.04 $  <span class="p">|</span>   <span class="m">0</span>.88 $  <span class="p">|</span> <span class="m">0</span>.0 %  <span class="p">|</span>
+<span class="p">|</span>  AMD   <span class="p">|</span>  <span class="m">717</span>   <span class="p">|</span>   <span class="m">2019</span>-04-27  <span class="p">|</span>  <span class="m">27</span>.89 $  <span class="p">|</span>  <span class="m">27</span>.88 $  <span class="p">|</span>  -7.17 $  <span class="p">|</span>-0.04 % <span class="p">|</span>
+<span class="p">|</span>  MBRX  <span class="p">|</span> <span class="m">12270</span>  <span class="p">|</span>   <span class="m">2019</span>-04-27  <span class="p">|</span>   <span class="m">1</span>.63 $  <span class="p">|</span>   <span class="m">1</span>.42 $  <span class="p">|</span> -2576.7 $ <span class="p">|</span>-12.88 %<span class="p">|</span>
+<span class="p">|</span>  KEYW  <span class="p">|</span>  <span class="m">1784</span>  <span class="p">|</span>   <span class="m">2019</span>-04-27  <span class="p">|</span>  <span class="m">11</span>.21 $  <span class="p">|</span>   <span class="m">11</span>.3 $  <span class="p">|</span>  <span class="m">160</span>.56 $ <span class="p">|</span> <span class="m">0</span>.8 %  <span class="p">|</span>
+<span class="p">|</span>  BABA  <span class="p">|</span>  <span class="m">107</span>   <span class="p">|</span>   <span class="m">2019</span>-04-27  <span class="p">|</span> <span class="m">186</span>.7425 $<span class="p">|</span>  <span class="m">187</span>.09 $ <span class="p">|</span>  <span class="m">37</span>.18 $  <span class="p">|</span> <span class="m">0</span>.19 % <span class="p">|</span>
+<span class="p">|</span> Total  <span class="p">|</span>   NA   <span class="p">|</span>   <span class="m">2019</span>-04-27  <span class="p">|</span> <span class="m">99972</span>.9 $ <span class="p">|</span> <span class="m">97587</span>.7 $ <span class="p">|</span> -2385.2 $ <span class="p">|</span>-2.39 % <span class="p">|</span>
+--------------------------------------------------------------------------------
+</pre></div>
+</div>
+<p>Returns nothing.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="i_o.sessions">
+<code class="descclassname">i_o.</code><code class="descname">sessions</code><span class="sig-paren">(</span><em>inv</em><span class="sig-paren">)</span><a class="headerlink" href="#i_o.sessions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Displays a table listing all the investments made by the user.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>----------------------------------------------------------------------
+<span class="p">|</span> Pos <span class="p">|</span>    Id    <span class="p">|</span>           Date          <span class="p">|</span>           Name          <span class="p">|</span>
+----------------------------------------------------------------------
+<span class="p">|</span>  <span class="m">1</span>  <span class="p">|</span>    <span class="m">1</span>     <span class="p">|</span>   <span class="m">2019</span>-04-22 <span class="m">16</span>:57:42   <span class="p">|</span>       <span class="m">6</span> Big Stuffs      <span class="p">|</span>
+<span class="p">|</span>  <span class="m">2</span>  <span class="p">|</span>    <span class="m">2</span>     <span class="p">|</span>   <span class="m">2019</span>-04-27 <span class="m">13</span>:59:42   <span class="p">|</span>           Test          <span class="p">|</span>
+<span class="p">|</span>  <span class="m">3</span>  <span class="p">|</span>    <span class="m">3</span>     <span class="p">|</span>   <span class="m">2019</span>-04-27 <span class="m">14</span>:05:07   <span class="p">|</span>         One One         <span class="p">|</span>
+<span class="p">|</span>  <span class="m">4</span>  <span class="p">|</span>    <span class="m">4</span>     <span class="p">|</span>   <span class="m">2019</span>-04-28 <span class="m">12</span>:31:58   <span class="p">|</span>   Glorious Investment   <span class="p">|</span>
+<span class="p">|</span>  <span class="m">5</span>  <span class="p">|</span>    <span class="m">5</span>     <span class="p">|</span>   <span class="m">2019</span>-04-28 <span class="m">12</span>:32:38   <span class="p">|</span>   Glorious Investment   <span class="p">|</span>
+----------------------------------------------------------------------
+</pre></div>
+</div>
+<p>Returns nothing.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="i_o.tickers">
+<code class="descclassname">i_o.</code><code class="descname">tickers</code><span class="sig-paren">(</span><em>row</em><span class="sig-paren">)</span><a class="headerlink" href="#i_o.tickers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lists all the tickers and names saved in the database.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>beta<span class="o">)</span>: symbols
+--&gt;   <span class="m">0</span>: AAPL -  Apple Inc.
+--&gt;   <span class="m">1</span>: TSLA -  Tesla Inc.
+--&gt;   <span class="m">2</span>: GOOGL -  Alphabet Inc.
+--&gt;   <span class="m">3</span>: BABA -  Alibaba Group Holding Limited
+--&gt;   <span class="m">4</span>: GWW -  W.W. Grainger Inc.
+--&gt;   <span class="m">5</span>: CVX -  Chevron Corporation
+--&gt;   <span class="m">6</span>: HAL -  Bank Nova Scotia Halifax Pfd <span class="m">3</span>
+--&gt;   <span class="m">7</span>: RAD -  Credit Suisse X-Links Monthly Pay 2xLeveraged Alerian MLP Index Exchange Traded Notes due May <span class="m">16</span> <span class="m">2036</span>
+--&gt;   <span class="m">8</span>: MBRX -  Moleculin Biotech Inc.
+--&gt;   <span class="m">9</span>: KEYW -  The KEYW Holding Corporation
+--&gt;  <span class="m">10</span>: BBBY -  Bed Bath <span class="p">&amp;</span> Beyond Inc.
+--&gt;  <span class="m">11</span>: AMD -  Advanced Micro Devices Inc.
+--&gt;  <span class="m">12</span>: STLD -  Steel Dynamics Inc.
+--&gt;  <span class="m">13</span>: ACB -  Aurora Cannabis Inc.
+--&gt;  <span class="m">14</span>: ATHEN -  Athene Holding Ltd. Class A
+</pre></div>
+</div>
+<p>Returns nothing.</p>
+</dd></dl>
+
+<span class="target" id="module-gbl"></span><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__gbl__</span></code> is used to list/access/set variables with a global scope.</p>
+<p>In this application we need to make some chunks of data available for multiple
+modules, for this reason we use variables of a global scope. For the sake of
+clarity, they are declared on a module dedicated to that.</p>
+<dl class="simple">
+<dt>The following global variables are declared:</dt><dd><ul class="simple">
+<li><p><cite>TICKERS</cite>     :   <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> storing tickers to compute</p></li>
+<li><p><cite>NAMES</cite>       :   <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> storing <cite>TICKERS</cite>’s name</p></li>
+<li><p><cite>P_VOL</cite>       :   <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> storing the volatility portfolio</p></li>
+<li><p><cite>P_CMR</cite>       :   <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> storing the momentum portfolio</p></li>
+<li><p><cite>P_CMP</cite>       :   <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> storing the composite portfolio</p></li>
+<li><p><cite>PRICES</cite>      :   <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> storing the prices register</p></li>
+<li><p><cite>API_KEY</cite>     :   <code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code> storing the API key</p></li>
+<li><p><cite>API_URL</cite>     :   <code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code> storing the API URL</p></li>
+</ul>
+</dd>
+</dl>
+<span class="target" id="module-test_volatility"></span><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__test_cumulative__</span></code> tests the function that computes the volatility
+of a vector in <a class="reference internal" href="#volatility.volatility" title="volatility.volatility"><code class="xref py py-func docutils literal notranslate"><span class="pre">volatility.volatility()</span></code></a></p>
+<p>This module can be exectuted with <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">test_volatility.py</span></code></p>
+<dl class="class">
+<dt id="test_volatility.TestVolatility">
+<em class="property">class </em><code class="descclassname">test_volatility.</code><code class="descname">TestVolatility</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#test_volatility.TestVolatility" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<span class="target" id="module-test_cumulative"></span><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__test_cumulative__</span></code> tests the function that computes the momentum
+of a vector in <a class="reference internal" href="#cumulative.momentum" title="cumulative.momentum"><code class="xref py py-func docutils literal notranslate"><span class="pre">cumulative.momentum()</span></code></a></p>
+<p>This module can be exectuted with <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">test_cumulative.py</span></code></p>
+<dl class="class">
+<dt id="test_cumulative.TestVolatility">
+<em class="property">class </em><code class="descclassname">test_cumulative.</code><code class="descname">TestVolatility</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#test_cumulative.TestVolatility" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
@@ -51,7 +853,7 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="#">Smartbetas</a></h1>
+<h1 class="logo"><a href="#">SmartBetas</a></h1>
 
 
 

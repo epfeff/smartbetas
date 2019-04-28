@@ -43,5 +43,4 @@ except OSError:
     print('Error: not connected to internet !')
     exit()
 # starts the program
-if __name__ == '__main__':
-    betacmd().cmdloop()
+betacmd().cmdloop()

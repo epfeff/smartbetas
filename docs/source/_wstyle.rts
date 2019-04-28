@@ -1,0 +1,18 @@
+[STYLESHEET]
+name=Sphinx
+description=Mostly a copy of the LaTeX style included with Sphinx
+base=sphinx
+
+[VARIABLES]
+blue=#000
+
+[linked reference]
+font_color=#000
+
+
+[heading level 4]
+number_format=NUMBER
+font_color=$(blue)
+
+[table of contents]
+depth=3

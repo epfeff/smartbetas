@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-""":mod:`__volatility` is used to compute the volatility of a security.
+""":mod:`__volatility__` is used to compute the volatility of a security.
 
 In this application, momentum is considered on a period between two years ago
 and now.
@@ -17,9 +17,10 @@ def volatility(data):
     """ Computes the volatility of a security.
 
     Parameters:
+
         - `data` : :class:`list`  of :class:`tuples`
 
-    Note: The function argument is built by :api.tsd:`api.tsd`, it is
+    Note: The function argument is built by :py:func:`api.tsd`, it is
     structured as follow: ``[(datetime.datetime(2019, 4, 18, 0, 0), 203.86)]`` .
 
     The function uses :mod:`__datetime__` to determine the dates between which

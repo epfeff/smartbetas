@@ -19,13 +19,13 @@ def ret(data):
     Parameters:
         - `data` : :class:`list`  of :class:`tuples`
 
-    Note: The function argument is built by :api.tsd:`api.tsd`, it is
+    Note: The function argument is built by :py:func:`api.tsd`, it is
     structured as follow: ``[(datetime.datetime(2019, 4, 18, 0, 0), 203.86)]`` .
 
     The function uses :mod:`__datetime__` to determine the dates between which
     the momentum shall be calculated. A new :class:`list` containing only the
     values to consider (the ones within the right time frame) is built and
-    passed to :momentum:`cumulative.momentum`.
+    passed to :py:func:`cumulative.momentum`.
 
     Returns a the momentum of the security (:class:`float`)
     """

@@ -5,10 +5,12 @@ The user interface is built on top of python's standard `cmd` module.
 
 The console interface inherits pretty much everything from the standard cmd
 `class`. The following parameters are modified:
+
     - `intro`   : 'Smart Betas Investing - Requires an internet connection'
     - `prompt`  : (beta)
 
 A new parameter is introduced:
+
     - 'out'     : `'-->'`, this string preceeds outputs on the console
 
 .. _Python cmd module:

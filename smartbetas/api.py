@@ -18,6 +18,7 @@ simply takes a ticker as input and returns the name of the equity if found.
 (`Alpha Vantage <https://www.alphavantage.co>`_) provides the stock data API.
 This is not a free service, however they offer a free limited access to their
 data. The following constraints are applicable when using a free account:
+
     - 5 API requests per minute
     - 500 API requests per day
 

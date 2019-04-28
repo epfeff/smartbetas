@@ -23,19 +23,25 @@ def smartbetas(tickers):
     score.
 
     Parameters:
+
         - `tickers` : :class:`list`  of tickers to compute
 
     Uses ``ProcessPoolExecutor`` to perform for each ticker the following tasks
-    in parallel (using the function :compute:`compute.compute`):
-        - Get data from the web API - :api:`api.tsd`
-        - Compute volatility - :volatility:`volatility.volatility`
-        - Compute momentum - :momentum:`cumulative.ret`
+    in parallel (using the function :py:func:`compute.compute`):
+
+        - Get data from the web API - :py:func:`api.tsd`
+        - Compute volatility - :py:func:`volatility.volatility`
+        - Compute momentum - :py:func:`cumulative.ret`
 
     The output of the parallel processing is stored in a :class:`list`
     containing for each ticker a :class:`list` of :class:`tuples`.
 
-    Sample: ``[[('t1', volatility), ('t1', momentum), ('t1', price)],
-            [('t2', vol), ('t2', vol), ('t2', vol)]]``
+    Sample:
+
+        .. code-block:: python
+
+            [[('t1', volatility), ('t1', momentum), ('t1', price)],
+                [('t2', vol), ('t2', vol), ('t2', vol)]]
 
     The volability portfolio is built by sorting the :class:`list` in an
     ascending fashion and extracting only the tickers and their volatility.
@@ -46,7 +52,7 @@ def smartbetas(tickers):
     The prices are also extracted to allow for future comparisons against the
     market prices.
 
-    The composite portfolio is computed with :composite:`composite.composite`.
+    The composite portfolio is computed with :py:func:`composite.composite`.
 
     The results are stored in the global variables.
 
@@ -79,9 +85,9 @@ def smartbetas(tickers):
 def compute(tick):
     """ Returns the volatility, momentum and price of a ticker.
 
-    This function gets the tickers data with the :api:`api.tsd`, the volatility
-    with :volatility:`volatility.volability` and the momentum with the module
-    :momentum:`cumulative.ret`.
+    This function gets the tickers data with the :py:func:`api.tsd`, the volatility
+    with :py:func:`volatility.volability` and the momentum with the module
+    :py:func:`cumulative.ret`.
 
     These function calls are segregated into this function to enable parallel
     processing.
