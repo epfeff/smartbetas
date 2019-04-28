@@ -1,3 +1,9 @@
+# -*- coding: UTF-8 -*-
+""":mod:`__test_cumulative__` tests the function that computes the volatility
+of a vector in :cumulative.volatility:`volatility.volatility`
+
+This module can be exectuted with ``python test_volatility.py``
+"""
 import unittest
 import volatility
 import datetime

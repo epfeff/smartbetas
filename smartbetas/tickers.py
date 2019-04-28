@@ -1,9 +1,35 @@
 # -*- coding: UTF-8 -*-
+""":mod:`__tickers__` is handling operations related to tickers passed to the
+application by the user.
+
+The input of all the operations are dictated by the tickers provided by the
+user, this module is used to check the files provided by users and to write
+data into the database.
+"""
 from datetime import datetime
 import gbl, api
 from db import db
 
 def validate(raw):
+    """ Checks the content of the data provided by the user.
+
+    The user provides tickers to the application by writing them into a file
+    that is loaded through the console interface with the <load> command.
+
+    We expect the file to be filled with coma separated tickers :class:`string`.
+
+    It is necessary to check that the syntax of the file is correct prior
+    passing this data further into the application to avoid errors.
+
+    Parameters:
+        - `raw` : :class:`string` content of the user provided file.
+
+    The function strips the raw data from spaces, carrier returns and split the
+    content around comas. It will also check if there was a trailing coma or if
+    the user mistakenly put two comas instead of one.
+
+    Returns a :class:`list` of sanitized tickers
+    """
     tickers = []
     raw = raw.replace(' ', '')                  # remove spaces
     raw = raw.replace('\n', '')                 # removes cr
@@ -13,6 +39,26 @@ def validate(raw):
     return tickers
 
 def save(ticks):
+    """ Saves the ticker's name into the database and into the global ticker
+    :class:`list`.
+
+    Parameters:
+        - `ticks` : :class:`list` of tickers :class:`string`
+
+    The function will check for each ticker if an entry already exists in the
+    database, if not, it will attempt to fetch the name from a web API.
+
+    If the fetch is successfull, its result is written into the database to save
+    time next time this ticker is used.
+
+    The function also sets the global `TICKERS` and `NAMES` :class:`list` with
+    the tickers and their corresponding names.
+
+    When a ticker can not be identified on the web API, it is dicarded and
+    stored in a :class:`list`.
+
+    Returns a :class:`list` containing tickers that caused errors.
+    """
     errors = []
     # verifiy if the symbol is already present in the db
     # otherwise fetches it from the public api and inserts it into the DB
@@ -33,6 +79,20 @@ def save(ticks):
     return errors
 
 def save_portfolio(vol, cmr, cmp, prices, name):
+    """ Writes the computed portfolios into the databse.
+
+    Parameters:
+        - `vol`  : :class:`dict` volatility portfolio.
+        - `cmr`  : :class:`dict` momentum portfolio.
+        - `cmp`  : :class:`dict` composite portfolio.
+        - `prices` : :class:`dict` price register.
+        - `name` : :class:`string` name of the portfolio.
+
+
+    Saves into the database the items passed as argument.
+
+    Returns `True` if it succeeded.
+    """
     db.portfolios.insert(name = name,
                         vol = vol,
                         cmr = cmr,
@@ -41,7 +101,3 @@ def save_portfolio(vol, cmr, cmp, prices, name):
                         date = datetime.now())
     db.commit()
     return True
-
-if __name__ == '__main__':
-    save(['GOOGL', 'APPL', 'TSLA'])
-    print(gbl.NAMES)

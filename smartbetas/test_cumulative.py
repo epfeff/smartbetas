@@ -1,3 +1,9 @@
+# -*- coding: UTF-8 -*-
+""":mod:`__test_cumulative__` tests the function that computes the momentum
+of a vector in :cumulative.momentum:`cumulative.momentum`
+
+This module can be exectuted with ``python test_cumulative.py``
+"""
 import unittest
 import cumulative
 import datetime

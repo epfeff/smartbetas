@@ -109,7 +109,7 @@ def tsd(tick):
     tuple containing in each position a datetime object and the closing price
     of the security. (List starts with the date closest to now)
 
-    List sample : ``[datetime.datetime(2019, 4, 18, 0, 0), 203.86]``
+    List sample : ``[(datetime.datetime(2019, 4, 18, 0, 0), 203.86)]``
 
     Returns a :class:`list` of :class:`tuple` with date and closing price.
     """
