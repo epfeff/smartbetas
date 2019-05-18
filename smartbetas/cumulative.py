@@ -1,15 +1,6 @@
 # -*- coding: UTF-8 -*-
-""":mod:`__cumulative__` is used to compute cumulative returns; also known as
+""":mod:`cumulative.py` is used to compute cumulative returns; also known as
 momentum.
-
-In this application, momentum is considered as the returns on a period between
-12 months ago and 2 months ago.
-
-All the date and time operations are handled with python's standard
-`datetime` module.
-
-.. _Python datetime:
-   https://docs.python.org/3/library/datetime.html
 """
 from datetime import datetime, timedelta
 
@@ -19,15 +10,16 @@ def ret(data):
     Parameters:
         - `data` : :class:`list`  of :class:`tuples`
 
-    Note: The function argument is built by :py:func:`api.tsd`, it is
-    structured as follow: ``[(datetime.datetime(2019, 4, 18, 0, 0), 203.86)]`` .
+    .. note::
+      The function argument is built by :py:func:`api.tsd`, it is
+      structured as follow: ``[(datetime.datetime(2019, 4, 18, 0, 0), 203.86)]`` .
 
-    The function uses :mod:`__datetime__` to determine the dates between which
+    The function uses :mod:`datetime` to determine the dates between which
     the momentum shall be calculated. A new :class:`list` containing only the
-    values to consider (the ones within the right time frame) is built and
-    passed to :py:func:`cumulative.momentum`.
+    values in the right time frame is built and passed to
+    :py:func:`cumulative.momentum`.
 
-    Returns a the momentum of the security (:class:`float`)
+    Returns the momentum of the security (:class:`float`)
     """
     vector = []
     today = datetime.today()
@@ -49,7 +41,7 @@ def momentum(vector):
     Parameters:
         - `vector` : :class:`list`  of :class:`floats`
 
-    The function computes the returns of the data passed as argument:
+    Moentum is computed as follow:
         - momentum = 100*(new - old)/old
 
     Returns the momentum of the vector (:class:`float`)

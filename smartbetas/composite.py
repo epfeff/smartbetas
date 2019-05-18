@@ -1,11 +1,5 @@
 # -*- coding: UTF-8 -*-
-""":mod:`__composite__` is used to determine a composite portfolio.
-
-In this application we define a composite portfolio as a portfolio based on the
-ranking of a security in the volatility portfolio and in the momentum portfolio.
-
-The score of security is the sum of its index (position) in the two other
-portfolio. The securities are then sorted in an ascending fasion.
+""":mod:`composite.py` is used to build a composite portfolio.
 """
 
 def composite(vol, cmr):
@@ -15,17 +9,18 @@ def composite(vol, cmr):
         - `vol` : :class:`dict`  volatility portfolio.
         - `cmr` : :class:`dict`  momentum portfolio.
 
-    Note: at this point, the two portfolios have the same tickers, only their
-    ranking varies.
+    .. note::
+      at this point, the same tickers are present in both portfolios. Their
+      ranking only is different.
 
     The function builds a :class:`dict` with the tickers and set their score
     to zero; sample {'ticker': 0}. Then it adds to the ticker score their index
     in volatility and momentum portfolio.
 
-    To rank the tickers, the :class:`dict` is transformed into a :class:`tuple`,
-     sorted and transformed back into a :class:`dict`.
+    The tickers are then sorted ascendingly, after having been transformed into
+    a :class:`tuple`.
 
-     Returns a :class:`dict` containing tickers and their score.
+    Returns a :class:`dict` containing tickers and their score.
 
     """
     vector = {}                        # used to store tickers indexes

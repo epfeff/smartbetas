@@ -1,60 +1,24 @@
 # -*- coding: UTF-8 -*-
-""":mod:`__api__` handles communications between the host and the web APIs.
-
-A web API is an Application Programming Interface for a web server or a web
-browser. On the server side, it consists or one or more publicly exposed
-endpoints accessible through `http` requests. The content is typically expressed
-in JSON (JavaScript Object Notation) or XML (eXtensible Markup Language).
-
-:mod:`__smartbetas__` relies on two APIs. One is used to convert tickers to
-company names (As example: AAPL -> Apple Inc), the second one is used to get
-information about a security (daily open, daily high, daily low, daily close and
-daily volume).
-
-The ticker API is totally free and open source, it is maintained by a single
-contributor (`Kambala Yashwanth <https://github.com/yashwanth2804>`_), this API
-simply takes a ticker as input and returns the name of the equity if found.
-
-(`Alpha Vantage <https://www.alphavantage.co>`_) provides the stock data API.
-This is not a free service, however they offer a free limited access to their
-data. The following constraints are applicable when using a free account:
-
-    - 5 API requests per minute
-    - 500 API requests per day
-
-Note that Alpha Vantage requires free users to register to get an API key. The
-key is stored in :mod:`__gbl__`.
-
-.. _Wikipedia Web API:
-   https://en.wikipedia.org/wiki/Web_API
-
-.. _Ticker Search API doc:
-   https://github.com/yashwanth2804/TickerSymbol
-
-.. _Alpha Vantage API Documentation:
-   https://www.alphavantage.co/documentation/
+""":mod:`api.py` handles communications between the host and the web APIs.
 """
 import gbl
 import urllib.request, json, datetime, time
 from datetime import datetime
 
 def symbol(tick):
-    """ Determines the name of a security based on a ticker.
+    """ Determines the name of a stock based on a ticker.
 
     Parameters:
-        - `tick` : :class:`string`  security ticker.
+        - `tick` : :class:`string`  stock's ticker.
 
-    Constructs the request URL with the ticker passed as argument then makes the
-    request and parses the data received from the API.
+    Constructs the request URL with the ticker passed as argument then makes an
+    `http` request and parses the data received from the API.
 
-    Data sample from the API: ``[{"symbol":"AAPL","name":"Apple Inc."}]``
+    `Json` Data sample from the API: ``[{"symbol":"AAPL","name":"Apple Inc."}]``
 
-    This function is always called before the software tries to obtain stock
-    data about a security, therefore it filters wrong/bad tickers provided by
-    the user.
-
-    Returns a :class:`string` contraining the name of the security OR ``None``
-    if the API failed to return data for the ticker.
+    Returns a :class:`string` contraining the name of the sock OR ``None``
+    if the API failed to return data for the ticker (as example, if a wrong
+    ticker was provided).
     """
     out = '(-api):'
     url = 'https://ticker-2e1ica8b9.now.sh/keyword/%s' % tick
@@ -67,22 +31,25 @@ def symbol(tick):
         return None
 
 def tsd(tick):
-    """ Fetches a security daily data from 20 years ago till now.
+    """ Fetches a stock daily data from 20 years ago till now.
 
     Parameters:
         - `tick` : :class:`string`  security ticker.
 
-    The function makes the API call and parses the JSON, then to assert that
-    data was indeed returned, it checks the length of the data:
-    - l=2 : Data returned
-    - l<2 : No data returned
+    The function builds the URL, makes the `http` request to the web API and
+    parses the received JSON, then to assert that data was indeed returned,
+    it checks the length of the data:
+
+        - length = 2 : Data returned
+        - length < 2 : No data returned
 
     If no data is returned, the function assumes that the maximum amount of
-    calls per minute is reached; it will wait for 15 seconds and retry if it
-    fails again it will wait again etc.. till data is returned.
+    calls per minute is reached; it will wait for 15 seconds and retry; if it
+    fails again it will wait again till data is returned.
 
-    Note: The function can not handle the maximum amount of requests, if it is
-    the case, it will loop forever.
+    .. note::
+      If the maximum amount of daily request is reached, the function will loop
+      forever.
 
     Data sample:
 
@@ -103,16 +70,17 @@ def tsd(tick):
                 "3. low": "202.1200",
                 "4. close": "204.3000",
                 "5. volume": "18611948"
-            },
+            },  // max 20 years of values
             ...
 
     Once the data was obtained, the function will create a :class:`list` of
-    tuple containing in each position a datetime object and the closing price
-    of the security. (List starts with the date closest to now)
+    :class:`tuple` containing in each position a datetime object and the closing
+    price of the stock for that date. (List starts with the date closest to now)
 
     List sample : ``[(datetime.datetime(2019, 4, 18, 0, 0), 203.86)]``
 
-    Returns a :class:`list` of :class:`tuple` with date and closing price.
+    Returns a :class:`list` of :class:`tuple` containing dates and closing
+    prices.
     """
     # json key holding the data
     daily = 'Time Series (Daily)'

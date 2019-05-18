@@ -1,6 +1,7 @@
 # -*- coding: UTF-8 -*-
-""":mod:`__test_cumulative__` tests the function that computes the volatility
-of a vector in :py:func:`volatility.volatility`
+""":mod:`test_cumulative.py` tests the function that computes the volatility
+of a vector in :py:func:`volatility.volatility`. This module uses `unittest` to
+assert the correct output of the tested module.
 
 This module can be exectuted with ``python test_volatility.py``
 """

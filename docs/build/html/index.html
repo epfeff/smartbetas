@@ -34,15 +34,14 @@
 <h1>Welcome to SmartBetas’s documentation!<a class="headerlink" href="#welcome-to-smartbetas-s-documentation" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 </div>
-</div>
-<div class="section" id="smartbetas-application">
-<h1>SmartBetas Application<a class="headerlink" href="#smartbetas-application" title="Permalink to this headline">¶</a></h1>
-<p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__main__</span></code> is initiating the application and starting the console.</p>
+<div class="section" id="smartbetas-investing">
+<h2>SmartBetas Investing<a class="headerlink" href="#smartbetas-investing" title="Permalink to this headline">¶</a></h2>
+<p><code class="xref py py-mod docutils literal notranslate"><span class="pre">main.py</span></code> is the first</p>
 <p>The module checks if the required library is installed on the host and if
 the host is connected to the internet. If the tests succeed, it starts the
 user interface console.</p>
 <p>The program is built on a database, the communications between the program and
-the db is managed by pydal (Python Database Abstraction Layer). <code class="xref py py-mod docutils literal notranslate"><span class="pre">__main__</span></code>
+the db is managed by pydal <a class="footnote-reference brackets" href="#id2" id="id1">1</a> (Python Database Abstraction Layer). <code class="xref py py-mod docutils literal notranslate"><span class="pre">main.py</span></code>
 checks if <cite>pydal</cite> is installed on the host; if not, the program outputs a
 message and closes.</p>
 <p>The module will also check if the host is connected to the internet, this is
@@ -52,7 +51,16 @@ If the host is not connected to the internet the program will close.</p>
 port 80.</p>
 <p>This module also clears the console of whatever was currently displayed on it
 prior starting the console.</p>
-<span class="target" id="module-db"></span><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__db__</span></code> is used to handle the database in which the application is
+<dl class="footnote brackets">
+<dt class="label" id="id2"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>pyDal’s API documentation:
+<a class="reference external" href="https://pydal.readthedocs.io/en/latest/">https://pydal.readthedocs.io/en/latest/</a></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="module-db">
+<span id="database-layer"></span><h2>Database Layer<a class="headerlink" href="#module-db" title="Permalink to this headline">¶</a></h2>
+<p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__db__</span></code> is used to handle the database in which the application is
 storing operations, tickers, portfolios and reports.</p>
 <p>The layer to manage the database is provided by <cite>pyDal</cite>, this is an open source
 python package acting as an abstraction layer between an application and a
@@ -113,7 +121,10 @@ portfolio <cite>cmr</cite>, a composite based portfolio <cite>cmp</cite> and dat
 ...
 </pre></div>
 </div>
-<span class="target" id="module-tickers"></span><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__tickers__</span></code> is handling operations related to tickers passed to the
+</div>
+<div class="section" id="module-tickers">
+<span id="tickers-management"></span><h2>Tickers Management<a class="headerlink" href="#module-tickers" title="Permalink to this headline">¶</a></h2>
+<p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__tickers__</span></code> is handling operations related to tickers passed to the
 application by the user.</p>
 <p>The input of all the operations are dictated by the tickers provided by the
 user, this module is used to check the files provided by users and to write
@@ -179,7 +190,10 @@ the user mistakenly put two comas instead of one.</p>
 <p>Returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> of sanitized tickers</p>
 </dd></dl>
 
-<span class="target" id="module-api"></span><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__api__</span></code> handles communications between the host and the web APIs.</p>
+</div>
+<div class="section" id="module-api">
+<span id="api-management"></span><h2>API Management<a class="headerlink" href="#module-api" title="Permalink to this headline">¶</a></h2>
+<p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__api__</span></code> handles communications between the host and the web APIs.</p>
 <p>A web API is an Application Programming Interface for a web server or a web
 browser. On the server side, it consists or one or more publicly exposed
 endpoints accessible through <cite>http</cite> requests. The content is typically expressed
@@ -268,7 +282,10 @@ of the security. (List starts with the date closest to now)</p>
 <p>Returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code> with date and closing price.</p>
 </dd></dl>
 
-<span class="target" id="module-compute"></span><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__compute__</span></code> is used to compute volatility, momentum and composite
+</div>
+<div class="section" id="module-compute">
+<span id="computing-results"></span><h2>Computing results<a class="headerlink" href="#module-compute" title="Permalink to this headline">¶</a></h2>
+<p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__compute__</span></code> is used to compute volatility, momentum and composite
 based porfolio.</p>
 <p>This module gets from the stock data API the security closing value and
 computes for each security the volatility and the momentum.</p>
@@ -329,7 +346,9 @@ market prices.</p>
 <p>Returns nothing</p>
 </dd></dl>
 
-<span class="target" id="module-volatility"></span><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__volatility__</span></code> is used to compute the volatility of a security.</p>
+<div class="section" id="module-volatility">
+<span id="volatility"></span><h3>Volatility<a class="headerlink" href="#module-volatility" title="Permalink to this headline">¶</a></h3>
+<p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__volatility__</span></code> is used to compute the volatility of a security.</p>
 <p>In this application, momentum is considered on a period between two years ago
 and now.</p>
 <p>To calculate the volatility, a standard deviation needs to be performed. To do
@@ -353,7 +372,10 @@ list is then passed to <cite>statistics.stdev</cite> to compute the deviation.</
 <p>Returns a the volatility of the security (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>)</p>
 </dd></dl>
 
-<span class="target" id="module-cumulative"></span><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__cumulative__</span></code> is used to compute cumulative returns; also known as
+</div>
+<div class="section" id="module-cumulative">
+<span id="momentum"></span><h3>Momentum<a class="headerlink" href="#module-cumulative" title="Permalink to this headline">¶</a></h3>
+<p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__cumulative__</span></code> is used to compute cumulative returns; also known as
 momentum.</p>
 <p>In this application, momentum is considered as the returns on a period between
 12 months ago and 2 months ago.</p>
@@ -395,7 +417,10 @@ passed to <a class="reference internal" href="#cumulative.momentum" title="cumul
 <p>Returns a the momentum of the security (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>)</p>
 </dd></dl>
 
-<span class="target" id="module-composite"></span><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__composite__</span></code> is used to determine a composite portfolio.</p>
+</div>
+<div class="section" id="module-composite">
+<span id="composite"></span><h3>Composite<a class="headerlink" href="#module-composite" title="Permalink to this headline">¶</a></h3>
+<p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__composite__</span></code> is used to determine a composite portfolio.</p>
 <p>In this application we define a composite portfolio as a portfolio based on the
 ranking of a security in the volatility portfolio and in the momentum portfolio.</p>
 <p>The score of security is the sum of its index (position) in the two other
@@ -423,7 +448,11 @@ in volatility and momentum portfolio.</p>
 </dl>
 </dd></dl>
 
-<span class="target" id="module-money"></span><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__money__</span></code> is handle investments in the computed portfolios.</p>
+</div>
+</div>
+<div class="section" id="module-money">
+<span id="investing"></span><h2>Investing<a class="headerlink" href="#module-money" title="Permalink to this headline">¶</a></h2>
+<p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__money__</span></code> is handle investments in the computed portfolios.</p>
 <p>In the application, when a user requested to compute portfolios based on the
 tickers he provided, he can choose to invest money in the portfolios to be
 able to check them later on.</p>
@@ -453,7 +482,10 @@ securities are also stored for future usage.</p>
 <p>Returns nothing.</p>
 </dd></dl>
 
-<span class="target" id="module-console"></span><p><a class="reference internal" href="#module-console" title="console"><code class="xref py py-mod docutils literal notranslate"><span class="pre">console</span></code></a> is used to have a neat console interface.</p>
+</div>
+<div class="section" id="module-console">
+<span id="user-interface"></span><h2>User Interface<a class="headerlink" href="#module-console" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="#module-console" title="console"><code class="xref py py-mod docutils literal notranslate"><span class="pre">console</span></code></a> is used to have a neat console interface.</p>
 <p>The user interface is built on top of python’s standard <cite>cmd</cite> module.</p>
 <p>The console interface inherits pretty much everything from the standard cmd
 <cite>class</cite>. The following parameters are modified:</p>
@@ -550,7 +582,10 @@ command entered.</p>
 
 </dd></dl>
 
-<span class="target" id="module-check"></span><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__check__</span></code> is used to determine the returns of an investment.</p>
+</div>
+<div class="section" id="module-check">
+<span id="checking-out-results"></span><h2>Checking Out Results<a class="headerlink" href="#module-check" title="Permalink to this headline">¶</a></h2>
+<p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__check__</span></code> is used to determine the returns of an investment.</p>
 <p>This module fetches from the stock data API today’s securities values and
 compares them with the data from a previous investment session stored in the
 database. (API data provided through <a class="reference internal" href="#api.tsd" title="api.tsd"><code class="xref py py-func docutils literal notranslate"><span class="pre">api.tsd()</span></code></a> )</p>
@@ -647,7 +682,10 @@ returns using the same formula as in <a class="reference internal" href="#check.
 price, the absolute change, the returns and the date of the purchase.</p>
 </dd></dl>
 
-<span class="target" id="module-i_o"></span><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__i_o__</span></code> is handle inputs and outputs generated from the console by
+</div>
+<div class="section" id="module-i_o">
+<span id="input-outputs"></span><h2>Input / Outputs<a class="headerlink" href="#module-i_o" title="Permalink to this headline">¶</a></h2>
+<p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__i_o__</span></code> is handle inputs and outputs generated from the console by
 the user.</p>
 <dl class="function">
 <dt id="i_o.investment">
@@ -803,7 +841,10 @@ portfolio.</p>
 <p>Returns nothing.</p>
 </dd></dl>
 
-<span class="target" id="module-gbl"></span><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__gbl__</span></code> is used to list/access/set variables with a global scope.</p>
+</div>
+<div class="section" id="module-gbl">
+<span id="global-variables"></span><h2>Global Variables<a class="headerlink" href="#module-gbl" title="Permalink to this headline">¶</a></h2>
+<p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__gbl__</span></code> is used to list/access/set variables with a global scope.</p>
 <p>In this application we need to make some chunks of data available for multiple
 modules, for this reason we use variables of a global scope. For the sake of
 clarity, they are declared on a module dedicated to that.</p>
@@ -820,7 +861,10 @@ clarity, they are declared on a module dedicated to that.</p>
 </ul>
 </dd>
 </dl>
-<span class="target" id="module-test_volatility"></span><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__test_cumulative__</span></code> tests the function that computes the volatility
+</div>
+<div class="section" id="module-test_volatility">
+<span id="test-modules"></span><h2>Test Modules<a class="headerlink" href="#module-test_volatility" title="Permalink to this headline">¶</a></h2>
+<p><code class="xref py py-mod docutils literal notranslate"><span class="pre">__test_cumulative__</span></code> tests the function that computes the volatility
 of a vector in <a class="reference internal" href="#volatility.volatility" title="volatility.volatility"><code class="xref py py-func docutils literal notranslate"><span class="pre">volatility.volatility()</span></code></a></p>
 <p>This module can be exectuted with <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">test_volatility.py</span></code></p>
 <dl class="class">
@@ -836,6 +880,7 @@ of a vector in <a class="reference internal" href="#cumulative.momentum" title="
 <em class="property">class </em><code class="descclassname">test_cumulative.</code><code class="descname">TestVolatility</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#test_cumulative.TestVolatility" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+</div>
 </div>
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>

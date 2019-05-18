@@ -1,16 +1,5 @@
 # -*- coding: UTF-8 -*-
-""":mod:`__check__` is used to determine the returns of an investment.
-
-This module fetches from the stock data API today's securities values and
-compares them with the data from a previous investment session stored in the
-database. (API data provided through :py:func:`api.tsd` )
-
-To expedite things, this module uses python's `concurrent.futures` to fetch
-data from the API in a parallel fashion. This is done to save time as `HTTP`
-requests take time no matter how poweful the host running the code is.
-
-.. _Python ``concurrent.futures``:
-   https://docs.python.org/3/library/concurrent.futures.html
+""":mod:`check.py` is used to determine the returns of an investment.
 """
 import api
 import concurrent.futures
@@ -18,20 +7,19 @@ from db import db
 from datetime import datetime
 
 def sessions(id):
-    """ Determines returns of an investment session.
+    """ Computes returns of an investment session.
 
     Parameters:
 
         - `id` : :class:`integer`  investment session database id.
 
-    Uses ``ProcessPoolExecutor`` to request in parallel the latest prices of
-    each tickers using :py:func:`check.get_price` and stores the results in
-    a :class:`dict` :  ``{'ticker1': 100, 'ticker2': 200}``.
+    Uses ``ProcessPoolExecutor.map`` to launch parallel processes running
+    :py:func:`check.get_prices` on each stock passed as argument.
 
     The returns of the portfolios are calculated by :py:func:`check.returns`.
 
-    Once the returns are calculated, the results are saved in the database, this
-    is to allow users to consults the results later on without having the
+    Once the returns are computed, the results are saved in the database, this
+    is to allow users to consults the results later without having the
     re-compute the returns or query any data from the API.
 
     Returns:
@@ -69,12 +57,12 @@ def sessions(id):
     return r_vol, r_cmr, r_cmp, inv['name']
 
 def get_price(tick):
-    """ Gets the current price of a security.
+    """ Gets the current price of a stock.
 
     Parameters:
-        - `tick` : :class:`string`  security ticker
+        - `tick` : :class:`string`  stock ticker
 
-    Fetches the latest price of the ticker from the stock api. The result is
+    Fetches the latest price of the stock from the web API. The result is
     stored in a :class:`tuple` : ```('ticker', 149)``
 
     Returns a :class:`tuple` containing the ticker and its latest price.
@@ -84,26 +72,26 @@ def get_price(tick):
     return price
 
 def returns(inv, pfl, prices):
-    """ Computes the return of a portfolio.
+    """ Computes the returns of a portfolio.
 
     Parameters:
 
         - `inv`     : :class:`list` past investment session row from the db
-        - `pfl`     : :class:`string` name of the portfolio
+        - `pfl`     : :class:`string` name of the portfolio (can be `vol`, `cmr` or `cmp`)
         - `prices`  : :class:`dict` latest investment's ticker prices
 
-    Computes the absolute change and the returns for each ticker in the
+    Computes the absolute change and the returns for each stock in the
     portfolio. These values are calculated as follow:
 
-        - Absolute change : (qty *new) - (qty * old) (*rounded at 2 digits*)
-        - Returns         : [(new-old)/old*100] (*rounded at 2 digits*)
+        - Absolute change : (`qty`*`new`) - (`qty`*`old`) (*rounded at 2 digits*)
+        - Returns         : [(`new`-`old`)/`old`*`100`] (*rounded at 2 digits*)
 
     The total absolute change and return is handled by
     :py:func:`check.t_returns`.
 
-    Returns a :class:`dict` containing for each ticker the initial price,
+    Returns a :class:`dict` containing for each stock the initial price,
     the new price, the absolute change, the returns, the quantity of shares and
-    the date of the purchase.
+    the date of the intial purchase.
     """
     out = dict()
     for t in list(inv[pfl].keys()):
@@ -126,14 +114,14 @@ def t_returns(inv, pfl, prices, date):
 
     Parameters:
 
-        - `inv`     : :class:`list` past investment session row from the db
+        - `inv`     : :class:`list` investment session `db` row
         - `pfl`     : :class:`string` name of the portfolio
         - `prices`  : :class:`dict` latest investment's ticker prices
         - `date`    : :class:`string` date of the purchase
 
-    Computes the sum of the initial portfolio value and the sum of the current
-    portfolio value. Based on the sums, it computes the absolute change and the
-    returns using the same formula as in :py:func:`check.returns`.
+    Computes the sum of the shares when the invesment was made to the sum of the
+    shares now. The absolute change and returns are calculated with the same
+    formulas as in :py:func:`check.returns`
 
     Returns a :class:`dict` containing the total initial price, the new
     price, the absolute change, the returns and the date of the purchase.

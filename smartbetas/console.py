@@ -1,20 +1,5 @@
 # -*- coding: UTF-8 -*-
-""":mod:`console` is used to have a neat console interface.
-
-The user interface is built on top of python's standard `cmd` module.
-
-The console interface inherits pretty much everything from the standard cmd
-`class`. The following parameters are modified:
-
-    - `intro`   : 'Smart Betas Investing - Requires an internet connection'
-    - `prompt`  : (beta)
-
-A new parameter is introduced:
-
-    - 'out'     : `'-->'`, this string preceeds outputs on the console
-
-.. _Python cmd module:
-   https://docs.python.org/3/library/cmd.html
+""":mod:`console` provides a simple yet useful command line interface.
 """
 import cmd, os, tickers, gbl, api, compute, i_o, money, check
 from db import db
@@ -27,10 +12,11 @@ class betacmd(cmd.Cmd):
 
     # empy lines do nothing
     def emptyline(self):
+        """ Overriden to prevent default"""
         return
 
     def do_load(self, arg):
-        """ Loads a file containing tickers
+        """ Extracts tickers from a file.
 
         usage: load <FILENAME>
 
@@ -78,7 +64,7 @@ class betacmd(cmd.Cmd):
             print('%s specify what you want to see (tickers portfolio invest)' % (self.out))
 
     def do_symbols(self, arg):
-        """ Display tickers stored in the database
+        """ Shows tickers and their associated names stored in the db.
 
         usage: symbols
         """
@@ -90,7 +76,7 @@ class betacmd(cmd.Cmd):
             print('%s %3s: %s -  %s' % (self.out, i, sym.ticker, sym.name))
 
     def do_compute(self, arg):
-        """ Computes tickers in the pipe into a portfolio
+        """ Build portfolis with the provided tickers.
 
         usage: compute
         """
@@ -106,7 +92,7 @@ class betacmd(cmd.Cmd):
     def do_portfolios(self, arg):
         """ Displays stored portfolios
 
-        Users can select a portfolio, view its securities and/or invest in it.
+        Users can select a portfolio, view its stocks and/or invest in it.
 
         usage: portfolios
         """
@@ -145,7 +131,7 @@ class betacmd(cmd.Cmd):
             i_o.tickers(db(db.portfolios.id == s_id).select().as_list()[0])
 
     def do_invest(self, arg):
-        """Invest 100'000 USD into each of the calculated portfolio.
+        """Invest 100'000 USD into each of the computed portfolio.
 
         usage: invest
         """
@@ -158,7 +144,7 @@ class betacmd(cmd.Cmd):
             gbl.P_CMP, gbl.PRICES, s_name, 100000)
 
     def do_check(self, arg):
-        """ Generate a short report detailling returns for an investment
+        """ Generates a  report about investment returns.
 
         usage: check
         """

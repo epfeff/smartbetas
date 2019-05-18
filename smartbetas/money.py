@@ -1,12 +1,5 @@
 # -*- coding: UTF-8 -*-
-""":mod:`__money__` is handle investments in the computed portfolios.
-
-In the application, when a user requested to compute portfolios based on the
-tickers he provided, he can choose to invest money in the portfolios to be
-able to check them later on.
-
-For now one can only invest 100'000 USD in each portfolio with a reparatition
-of 1/n where n is the amount of tickers in a portfolio.
+""":mod:`money.py` handles investments in the computed portfolios.
 """
 from db import db
 from datetime import datetime, date, timedelta
@@ -23,9 +16,9 @@ def invest(p_size, p_vol, p_cmr, p_cmp, prices, s_name, stack=100000):
         - `s_name` : :class:`string` name of the investment.
         - `stack`  : :class:`ìnt` defaults to 100000, money to invest.
 
-    For each portfolio, the function determines to max amount of shares that
-    can be purchased and builds a :class:`dict` of tickers and quantity of
-    shares.
+    In each portfolio, the function determines how many shares of stock can
+    be purchased. A :class:`dict` containing the stocks and the quantity of
+    shares purchased is built.
 
     The function then stores the outcomes into the database, the prices of the
     securities are also stored for future usage.

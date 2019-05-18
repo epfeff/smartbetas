@@ -1,6 +1,7 @@
 # -*- coding: UTF-8 -*-
-""":mod:`__test_cumulative__` tests the function that computes the momentum
-of a vector in :py:func:`cumulative.momentum`
+""":mod:`test_cumulative` tests the function that computes the momentum
+of a vector in :py:func:`cumulative.momentum`. This module uses `unittest` to 
+assert the correct output of the tested module.
 
 This module can be exectuted with ``python test_cumulative.py``
 """

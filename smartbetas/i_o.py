@@ -1,11 +1,10 @@
 # -*- coding: UTF-8 -*-
-""":mod:`__i_o__` is handle inputs and outputs generated from the console by
-the user.
+""":mod:`i_o.py` handles inputs and outputs on the console.
 """
 from db import db
 
 def portfolio(vol, cmr, cmp, prices):
-    """ Displays a computed portfolio.
+    """ Displays three computed portfolios.
 
     .. code-block:: bash
 
@@ -75,8 +74,7 @@ def portfolios(p_flo):
     print('%s' % ('-'.center(70, '-')))
 
 def investment(qty):
-    """ Prompts instructions to guide a user to invest 100'000 USD into a
-    portfolio.
+    """Interactive prompt to invest 100'000 USD into the computed portfolios.
 
     .. code-block:: bash
 
@@ -99,7 +97,7 @@ def investment(qty):
         return False, False
 
 def sessions(inv):
-    """ Displays a table listing all the investments made by the user.
+    """ Displays a table listing the investments made by the user.
 
     .. code-block:: bash
 
@@ -132,7 +130,7 @@ def sessions(inv):
     print('%s' % ('-'.center(70, '-')))
 
 def returns(vol, cmr, cmp, name):
-    """ Displays a report with the returns for each portfolio.
+    """ Displays the returns report of an investment session.
 
     .. code-block:: bash
 
@@ -237,7 +235,7 @@ def returns(vol, cmr, cmp, name):
     print('%s' % ('-'.center(80, '-')))
 
 def reports(rep):
-    """ Displays a listing all the previously saved reports.
+    """ Displays a table listing all the saved reports.
 
     .. code-block:: bash
 

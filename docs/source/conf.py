@@ -83,7 +83,7 @@ rinoh_documents = [('index',                    # top-level file (index.rst)
                     'SmartBetas Code Documentation',  # document title
                     'Elena Pfefferlé')]       # author
 rinoh_paper_size='A4'                          # paper size
-#rinoh_logo = '_logo/logo.pdf'                   # title logo
+rinoh_logo = '_logo/logo.jpg'                   # title logo
 rinoh_domain_indices = True                     # if false no index generated
 rinoh_stylesheet = '_wstyle.rts'
 rinoh_template = 'book'
