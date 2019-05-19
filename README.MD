@@ -10,7 +10,7 @@ Make sure that the required libraries are installed on your computer:
 ```shell
 pip install pydal
 ```
-Navigate to the root folder of the package and create a file containing stock tickers:
+Navigate to the root of the package and create a file containing stock tickers:
 ```shell
 cd smartbetas
 nano tickers.txt
@@ -38,6 +38,15 @@ You can confirm that the tickers were properly saved with `show tickers`:
 --> 2 ticker(s) ready
 -->   0: AAPL -  Apple Inc.
 -->   1: TSLA -  Tesla Inc.
+```
+
+Note that it is also possible to verify what tickers are saved in the database with `symbols` :
+```shell
+(beta): symbols
+-->   0: AAPL -  Apple Inc.
+-->   1: TSLA -  Tesla Inc.
+-->   2: GOOGL -  Alphabet Inc.
+-->   3: BABA -  Alibaba Group Holding Limited
 ```
 
 You can then ask the program to generate a portfolio collection with `compute`:
@@ -165,4 +174,42 @@ you can access it with `report`:
 |  7  |    7     |        2019-05-19       |       6 Big Stuffs      |
 ----------------------------------------------------------------------
 --> Report ID ? (Id): 1
+```
+
+You can recall previous portfolio to list their stocks tickers and/or to reinvest in them with `portfolios` :
+```shell
+(beta): portfolios
+----------------------------------------------------------------------
+|  id |   Date   |      Name     |              Tickers              |
+----------------------------------------------------------------------
+|  1  |2019-04-23|   Apple Test  |                AAPL               |
+|  2  |2019-04-23|   Test Apple  |                AAPL               |
+|  3  |2019-04-23|      Test     |                AAPL               |
+----------------------------------------------------------------------
+--> portfolio ID ? (Id): 4
+--> invest or view tickers? (i/v):
+```
+
+### SmartBetas - Regenerating the documentation
+
+Clone or download the repository on your computer:
+
+```shell
+git clone https://github.com/epfeff/smartbetas.git
+```
+
+Make sure that the required libraries are installed on your computer:
+```shell
+pip install pydal
+pip install sphinx
+pip install rhinotype
+```
+Navigate to the documentation folder and if necessary, update the version in `conf.py`.
+Once the changes are completed (either on `index.rst` or in the code), regenerate the PDF and HTML.
+```shell
+cd smartbetas/docs/source
+... edit/changes ...
+cd ..
+Make rhino
+Make html
 ```
