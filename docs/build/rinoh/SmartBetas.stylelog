@@ -18,10 +18,10 @@
        > (0,0,1,0,2) title page author
          (0,0,0,0,2) body
     SingleStyledText('Elena Pfefferlé')
-  Paragraph('May 18, 2019', style='title page date')
+  Paragraph('May 25, 2019', style='title page date')
        > (0,0,1,0,2) title page date
          (0,0,0,0,2) body
-    SingleStyledText('May 18, 2019')
+    SingleStyledText('May 25, 2019')
 ---------------------------------- page i ----------------------------------
 #### FlowablesContainer('chapter title')
   Paragraph('Table of Contents', style='front matter section title')
@@ -2479,12 +2479,17 @@
                 MixedStyledText('list', style='monospaced')   None:None <literal>
                      > (0,0,1,0,1) monospaced
                   SingleStyledText('list')
-                SingleStyledText(' containing only the in the righ...')
+                SingleStyledText(' in which the daily returns betw...')
+            Paragraph('We then use statistics.stdev to ...')   C:\Users\pfefferlen\github\smartbetas\smartbetas\volatility.py:docstring of volatility.volatility:16 <paragraph>
+                 > (0,0,2,0,5) object description content paragraph
+                   (0,0,0,0,2) body
+              MixedStyledText('We then use statistics.stdev to ...')
+                SingleStyledText('We then use ')
                 MixedStyledText('statistics.stdev', style='title reference')   None:None <title_reference>
                      > (0,0,1,0,1) title reference
                   SingleStyledText('statistics.stdev')
                 SingleStyledText(' to compute the standard deviati...')
-            Paragraph('Returns a the volatility of the ...')   C:\Users\pfefferlen\github\smartbetas\smartbetas\volatility.py:docstring of volatility.volatility:17 <paragraph>
+            Paragraph('Returns a the volatility of the ...')   C:\Users\pfefferlen\github\smartbetas\smartbetas\volatility.py:docstring of volatility.volatility:18 <paragraph>
                  > (0,0,2,0,5) object description content paragraph
                    (0,0,0,0,2) body
               MixedStyledText('Returns a the volatility of the ...')
@@ -3352,10 +3357,10 @@
   (continued) DocumentTree()
     Section(id='measuring-results')   C:\Users\pfefferlen\github\smartbetas\docs\source\index.rst:261 <section>
          > (0,0,0,1,2) chapter
-      Paragraph('Using the latest price of a stoc...')   C:\Users\pfefferlen\github\smartbetas\docs\source\index.rst:263 <paragraph>
+      Paragraph('Using the latest prices of the s...')   C:\Users\pfefferlen\github\smartbetas\docs\source\index.rst:263 <paragraph>
            > (0,0,0,0,2) body
-        MixedStyledText('Using the latest price of a stoc...')
-          SingleStyledText('Using the latest price of a stoc...')
+        MixedStyledText('Using the latest prices of the s...')
+          SingleStyledText('Using the latest prices of the s...')
       Paragraph('To expedite things, this module ...')   C:\Users\pfefferlen\github\smartbetas\docs\source\index.rst:266 <paragraph>
            > (0,0,0,0,2) body
         MixedStyledText('To expedite things, this module ...')

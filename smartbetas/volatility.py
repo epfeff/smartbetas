@@ -17,9 +17,10 @@ def volatility(data):
       ``[(datetime.datetime(2019, 4, 18, 0, 0), 203.86)]``
 
     The function uses :mod:`datetime` to determine the dates between which
-    the volatility shall be computed. A new :class:`list` containing only the
-    in the right time frame is built. We then use `statistics.stdev` to compute
-    the standard deviation of the list.
+    the volatility shall be computed. A new :class:`list` in which the daily
+    returns between the right time frame is built.
+
+    We then use `statistics.stdev` to compute the standard deviation of the list.
 
     Returns a the volatility of the security (:class:`float`)
     """
@@ -29,7 +30,8 @@ def volatility(data):
     delta = timedelta(weeks = 104)
     two_y = today - delta               # date two years ago
 
-    for item in data:
+    for i, item in enumerate(data):
         if item[0] >= two_y:
-            vector.append(item[1])
+            vector.append(item[1]/data[i-1][1]*100)
+    vector[0] = 0
     return stdev(vector)

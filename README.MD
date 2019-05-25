@@ -1,5 +1,7 @@
 ## SmartBetas - Getting Started
 
+**Note**: You need to use *python3.7*
+
 Clone or download the repository on your computer:
 
 ```shell
@@ -8,8 +10,21 @@ git clone https://github.com/epfeff/smartbetas.git
 
 Make sure that the required libraries are installed on your computer:
 ```shell
-pip install pydal
+pip3 install pydal
 ```
+
+**Important** Please use your own Alphavantage API key, you can claim yours are the following address: [https://www.alphavantage.co/support/#api-key](https://www.alphavantage.co/support/#api-key).
+
+Set up your key in `gbl.py`:
+```shell
+cd smartbetas/smartbetas
+nano gbl.py
+
+...
+API_KEY='YOURAPIKEY'                 # public API key
+...
+```
+
 Navigate to the root of the package and create a file containing stock tickers:
 ```shell
 cd smartbetas
@@ -210,6 +225,6 @@ Once the changes are completed (either on `index.rst` or in the code), regenerat
 cd smartbetas/docs/source
 ... edit/changes ...
 cd ..
-Make rhino
+Make rinoh
 Make html
 ```
